@@ -1,0 +1,6 @@
+site_name: Alyona's peresonal blog
+
+docs_dir: src
+
+theme:
+  name: material
