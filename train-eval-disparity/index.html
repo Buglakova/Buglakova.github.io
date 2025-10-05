@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../notebook-example/">
+        <link rel="prev" href="..">
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.2">
     
     
@@ -21,10 +21,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.f56500e0.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.f56500e0.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
       
       
 
@@ -40,7 +40,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -79,7 +79,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Alyona&#39;s peresonal blog" class="md-header__button md-logo" aria-label="Alyona's peresonal blog" data-md-component="logo">
+    <a href=".." title="Alyona&#39;s peresonal blog" class="md-header__button md-logo" aria-label="Alyona's peresonal blog" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -165,7 +165,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Alyona&#39;s peresonal blog" class="md-nav__button md-logo" aria-label="Alyona's peresonal blog" data-md-component="logo">
+    <a href=".." title="Alyona&#39;s peresonal blog" class="md-nav__button md-logo" aria-label="Alyona's peresonal blog" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -184,7 +184,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         Home
       </a>
     </li>
@@ -195,62 +195,6 @@
       
       
 
-  
-  
-    
-  
-  
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_2">
-          Notebooks
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Notebooks" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
-          <span class="md-nav__icon md-icon"></span>
-          Notebooks
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../notebook-example-2/" class="md-nav__link">
-        Example 2
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../notebook-example/" class="md-nav__link">
-        Example
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
   
   
     
@@ -389,13 +333,6 @@
   
 </nav>
       
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -561,18 +498,79 @@
 <p><img src="images/training_pipeline.png" alt="Sliding window inference" align=center style="width: 400px;"/></p>
 <h2 id="diversity-of-biological-datasets">Diversity of biological datasets</h2>
 <p>Another important feature of biological images is extreme class disbalance. Within one image whole areas can contain no foreground objects. Let's inspect one electron microscopy volume as an example.</p>
+<pre><code class="language-python">from bio_monai.data import load_data_config
+from no_tiling.data import config_to_dataset
+import yaml
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import colors
+import matplotlib.patches as mpatches
+</code></pre>
+<pre><code class="language-python">cd ..
+</code></pre>
 <pre><code>/g/kreshuk/buglakova/projects/no_tiling_artifacts
+</code></pre>
+<pre><code class="language-python">config_path = &quot;experiments/em_organoids/setup_01.yaml&quot;
+data_config_path = &quot;experiments/em_organoids/data_config_organoids_full.json&quot;
 
+with open(config_path, &quot;r&quot;) as yamlfile:
+    config = yaml.load(yamlfile, Loader=yaml.FullLoader)
 
-Read data config
+data_config = load_data_config(data_config_path)
+
+cols = {&quot;fg&quot;: &quot;#66c2a5&quot;, &quot;bg&quot;: &quot;#8da0cb&quot;, &quot;boundaries&quot;: &quot;#fc8d62&quot;, &quot;extra&quot;: &quot;#e78ac3&quot;}
+channels = {&quot;fg&quot;: 0, &quot;bg&quot;: 3, &quot;boundaries&quot;: 1, &quot;extra&quot;: 2}
+full_names = {&quot;fg&quot;: &quot;foreground&quot;, &quot;bg&quot;: &quot;background&quot;, &quot;boundaries&quot;: &quot;boundaries&quot;, &quot;extra&quot;: &quot;extracellular&quot;}
+</code></pre>
+<pre><code>Read data config
 Read successful
+</code></pre>
+<pre><code class="language-python">ds = config_to_dataset(config[&quot;train&quot;][&quot;dataset&quot;], data_config[&quot;full_data&quot;])
+</code></pre>
+<pre><code>Loading dataset: 100%|██████████| 1/1 [03:39&lt;00:00, 219.93s/it]
+</code></pre>
+<pre><code class="language-python">data = ds[0][&quot;image&quot;].numpy()[0]
+label = ds[0][&quot;label&quot;].numpy().astype(np.uint16)
+</code></pre>
+<pre><code class="language-python">xy_slice_roi = np.s_[500, :, :]
+xz_slice_roi = np.s_[:, 750, :]
+plt.figure(figsize=(20, 20))
+
+f, ax = plt.subplots(2, 2, sharey=True, figsize=(20, 20))
+
+ax[0, 0].imshow(data[xy_slice_roi], cmap=&quot;Greys_r&quot;)
+ax[0, 0].set_xlabel(&quot;X&quot;)
+ax[0, 0].set_ylabel(&quot;Y&quot;)
+
+ax[1, 0].imshow(data[xz_slice_roi], cmap=&quot;Greys_r&quot;)
+ax[1, 0].set_xlabel(&quot;X&quot;)
+ax[1, 0].set_ylabel(&quot;Z&quot;)
+
+legend_patches = []
+for name, chan in channels.items():
+    cmap = colors.ListedColormap(['white', cols[name]])
+    ax[0, 1].imshow(label[chan][xy_slice_roi], label=name, cmap=cmap, alpha=(label[chan][xy_slice_roi] &gt; 0).astype(float))
+    legend_patches.append(mpatches.Patch(color=cols[name], label=full_names[name]))
+
+ax[1, 1].legend(handles=legend_patches, fontsize=&quot;large&quot;, ncol=4)
+ax[0, 1].set_xlabel(&quot;X&quot;)
+ax[0, 1].set_ylabel(&quot;Y&quot;)
+
+legend_patches = []
+for name, chan in channels.items():
+    cmap = colors.ListedColormap(['white', cols[name]])
+    ax[1, 1].imshow(label[chan][xz_slice_roi], label=name, cmap=cmap, alpha=(label[chan][xz_slice_roi] &gt; 0).astype(float))
+    legend_patches.append(mpatches.Patch(color=cols[name], label=full_names[name]))
 
 
-Loading dataset: 100%|██████████| 1/1 [03:39&lt;00:00, 219.93s/it]
+ax[0, 1].legend(handles=legend_patches, fontsize=&quot;large&quot;, ncol=4)
+ax[1, 1].set_xlabel(&quot;X&quot;)
+ax[1, 1].set_ylabel(&quot;Z&quot;)
 
 
-
-&lt;Figure size 2000x2000 with 0 Axes&gt;
+plt.tight_layout()
+</code></pre>
+<pre><code>&lt;Figure size 2000x2000 with 0 Axes&gt;
 </code></pre>
 <p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_15_1.png" /></p>
 <p>This is a FIB-SEM volume of a tissue and the task was to segment individual cells out. For that we need a network to perform semantic segmentation of 4 classes:</p>
@@ -589,27 +587,66 @@ Loading dataset: 100%|██████████| 1/1 [03:39&lt;00:00, 219.9
 <li>Even if we imagine taking a model for cell boundaries trained on some other electron microscopy data (I'm not aware of the existance of any dataset that is even somewhat similar), it doesn't solve the problem of segmenting extracellular matrix</li>
 <li>Seems like <code>image == 0</code> should solve segmenting background class, but there are the lipid droplets which also have 0 signal. In principle we could apply an heuristic for segmenting background, like taking the largest connected component, but it is not transferable to other datasets (not shown here). One of the downstream tasks is counting lipid droplets per cell, so ignoring them is not an option as well  </li>
 <li>Cell boundaries can be super thin - down to 1 pixel wide - or very thick in different parts of the dataset, so it's not possible to downsample it further</li>
-<li>
-<p>The dataset is quite unbalanced but the classes are distributed throughout the volume so it's not possible to pick just one foreground area and train on it</p>
-<p>fg 0.564123369077732
+<li>The dataset is quite unbalanced but the classes are distributed throughout the volume so it's not possible to pick just one foreground area and train on it</li>
+</ul>
+<pre><code class="language-python">plt.figure()
+for name, chan in channels.items():
+    plt.bar(chan, label[chan].sum() / label[chan].size, tick_label=full_names[name], color=cols[name])
+    print(name, label[chan].sum() / label[chan].size)
+names = channels.keys()
+plt.xticks([channels[name] for name in names], [full_names[name] for name in names]);
+plt.ylabel(&quot;Proportion of the class is full dataset&quot;)
+</code></pre>
+<pre><code>fg 0.564123369077732
 bg 0.2950981764296163
 boundaries 0.09271733890749893
-extra 0.04806111558515283</p>
-<p>Text(0, 0.5, 'Proportion of the class is full dataset')</p>
-</li>
-</ul>
+extra 0.04806111558515283
+
+
+
+
+
+Text(0, 0.5, 'Proportion of the class is full dataset')
+</code></pre>
 <p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_17_2.png" /></p>
 <p>As we can see, boundaries class takes up $9%$ of the volume. Let's sample the training samples of size $128 \times 128 \times 128$ from the dataset and check the distribution of the boundaries class.</p>
+<pre><code class="language-python">from monai.data import GridPatchDataset, DataLoader, PatchIterd
+patch_iter = PatchIterd(keys=[&quot;image&quot;, &quot;label&quot;], patch_size=(128, 128, 128), start_pos=(0, 0, 0))
+grid_dataset = GridPatchDataset(data=ds, patch_iter=patch_iter)
+from tqdm import tqdm
+class_distribution = {&quot;fg&quot;: [], &quot;boundaries&quot;: [], &quot;extra&quot;: [], &quot;bg&quot;: []}
+
+for item in tqdm(DataLoader(grid_dataset, batch_size=1, num_workers=8)):
+    item = item[0]
+    img = item[&quot;image&quot;].numpy()[0]
+    lbl = item[&quot;label&quot;].numpy()[0].astype(np.uint16)
+    class_distribution[&quot;fg&quot;].append(lbl[0].sum() / lbl[0].size)
+    class_distribution[&quot;boundaries&quot;].append(lbl[1].sum() / lbl[1].size)
+    class_distribution[&quot;extra&quot;].append(lbl[2].sum() / lbl[2].size)
+    class_distribution[&quot;bg&quot;].append(lbl[3].sum() / lbl[3].size)
+</code></pre>
 <pre><code>1716it [01:03, 26.90it/s]
-
-
-
-
-
-Text(0.5, 0, 'Proportion of boundary class in training patch')
+</code></pre>
+<pre><code class="language-python">plt.hist(class_distribution[&quot;boundaries&quot;], bins=100, color=cols[&quot;boundaries&quot;])
+plt.ylabel(&quot;Number of samples&quot;)
+plt.xlabel(&quot;Proportion of boundary class in training patch&quot;)
+</code></pre>
+<pre><code>Text(0.5, 0, 'Proportion of boundary class in training patch')
 </code></pre>
 <p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_20_1.png" /></p>
 <p>Most of the samples have no boundary class and the rest of the samples are far from the dataset-wide $10%$. Sampling randomly, we would need batches of approximately N samples to correctly estimate the boundary class proportion in most samples.</p>
+<pre><code class="language-python">import seaborn as sns
+import pandas as pd
+
+sampled_proportions = pd.DataFrame()
+for batch_size in (1, 2, 4, 8, 16, 32, 64, 128, 256):
+    sampled_proportions[batch_size] = [np.sum(np.random.choice(class_distribution[&quot;boundaries&quot;], replace=True, size=batch_size)) / batch_size for _ in range(1000)]
+</code></pre>
+<pre><code class="language-python">plt.figure(figsize=(12, 4))
+sns.stripplot(sampled_proportions, jitter=0.4, alpha=0.2)
+plt.xlabel(&quot;batch size&quot;)
+plt.ylabel(&quot;Proportion of boundaries class in each batch&quot;)
+</code></pre>
 <pre><code>Text(0, 0.5, 'Proportion of boundaries class in each batch')
 </code></pre>
 <p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_23_1.png" /></p>
@@ -625,6 +662,34 @@ where $\mu$ and $\sigma$ are normalization parameters and $\epsilon$ is a small 
 <p>An important assumption here is that the <strong>feature statistics of training batches remain stable and correspond to dataset-wide statistics</strong>. Let's look at what happens when it's not the case.</p>
 <h2 id="real-mean-and-variance-of-features-vs-batch-statistics">Real mean and variance of features vs batch statistics</h2>
 <p>I trained a 3D U-Net to segment the electron microscopy volume introduced earlier. This model uses $BatchNorm$:</p>
+<pre><code class="language-python">from monai.utils import set_determinism
+from monai.data import DataLoader, PatchDataset
+from monai.transforms import RandSpatialCropSamplesd
+
+import torch
+from no_tiling.models import load_model
+
+from torchvision.models.feature_extraction import get_graph_node_names, create_feature_extractor
+
+</code></pre>
+<pre><code class="language-python">model_path = &quot;data/experiments/organoids_boundaries/setup_01/model_epoch_0025.pth&quot;
+
+# Monai settings
+set_determinism(seed=0)
+
+# Set device
+if torch.cuda.is_available():
+    print(&quot;GPU is available&quot;)
+    device = torch.device(6)
+else:
+    print(&quot;GPU is not available&quot;)
+    device = torch.device(&quot;cpu&quot;)
+
+# Load model    
+model = load_model(model_path).to(device)
+model.eval()
+print(model)
+</code></pre>
 <pre><code>GPU is available
 BasicUNet features: (32, 64, 128, 32).
 Scaling factors: [[2, 2, 2], [2, 2, 2]]
@@ -745,7 +810,67 @@ UNet(
 </code></pre>
 <p>The network starts with the convolution <code>conv_0</code> followed by a normalization layer and nonlinearity. In principle normalization layers are supposed to standardize the features: center the distribution around zero and force unit variance. But does it actually happen when the batch size is small?</p>
 <p>Let's extract the outputs of the very first convolution and look at their statistics.</p>
+<pre><code class="language-python">nodes, _ = get_graph_node_names(model)
+print(nodes)
+
+feature_extractor = create_feature_extractor(model, return_nodes=['conv_0.conv_0.conv'])
+
+</code></pre>
 <pre><code>['x', 'conv_0.conv_0.conv', 'conv_0.conv_0.adn.N', 'conv_0.conv_0.adn.D', 'conv_0.conv_0.adn.A', 'conv_0.conv_1.conv', 'conv_0.conv_1.adn.N', 'conv_0.conv_1.adn.D', 'conv_0.conv_1.adn.A', 'downs.0.max_pooling', 'downs.0.convs.conv_0.conv', 'downs.0.convs.conv_0.adn.N', 'downs.0.convs.conv_0.adn.D', 'downs.0.convs.conv_0.adn.A', 'downs.0.convs.conv_1.conv', 'downs.0.convs.conv_1.adn.N', 'downs.0.convs.conv_1.adn.D', 'downs.0.convs.conv_1.adn.A', 'downs.1.max_pooling', 'downs.1.convs.conv_0.conv', 'downs.1.convs.conv_0.adn.N', 'downs.1.convs.conv_0.adn.D', 'downs.1.convs.conv_0.adn.A', 'downs.1.convs.conv_1.conv', 'downs.1.convs.conv_1.adn.N', 'downs.1.convs.conv_1.adn.D', 'downs.1.convs.conv_1.adn.A', 'upcats.0.upsample.deconv', 'upcats.0.convs.conv_0.conv', 'upcats.0.convs.conv_0.adn.N', 'upcats.0.convs.conv_0.adn.D', 'upcats.0.convs.conv_0.adn.A', 'upcats.0.convs.conv_1.conv', 'upcats.0.convs.conv_1.adn.N', 'upcats.0.convs.conv_1.adn.D', 'upcats.0.convs.conv_1.adn.A', 'upcats.1.upsample.deconv', 'upcats.1.convs.conv_0.conv', 'upcats.1.convs.conv_0.adn.N', 'upcats.1.convs.conv_0.adn.D', 'upcats.1.convs.conv_0.adn.A', 'upcats.1.convs.conv_1.conv', 'upcats.1.convs.conv_1.adn.N', 'upcats.1.convs.conv_1.adn.D', 'upcats.1.convs.conv_1.adn.A', 'final_conv', 'final_activation']
+</code></pre>
+<pre><code class="language-python">running_mean = model.conv_0.conv_0.adn.N.running_mean.cpu().numpy()
+running_var = model.conv_0.conv_0.adn.N.running_var.cpu().numpy()
+</code></pre>
+<pre><code class="language-python">n_samples = 100
+
+train_sampler = RandSpatialCropSamplesd(keys=[&quot;image&quot;, &quot;label&quot;], roi_size=[128, 128, 128], num_samples=n_samples,
+                            random_center=True, random_size=False)
+
+train_patch_dataset = PatchDataset(data=ds,
+            patch_func=train_sampler,
+            samples_per_image=n_samples)
+
+train_loader = DataLoader(train_patch_dataset, batch_size=1)
+</code></pre>
+<pre><code class="language-python">feature_extractor = create_feature_extractor(
+model, return_nodes=['conv_0.conv_0.conv'])
+
+conv_features = []
+
+for tile in train_loader:
+    # Plot input
+    # print(tile[&quot;image&quot;])
+    # plt.imshow(tile[&quot;image&quot;][0, 0, 32, ...])
+    plt.show()
+    out = feature_extractor(tile[&quot;image&quot;].to(device))
+    conv_feat = out['conv_0.conv_0.conv'].detach().to(&quot;cpu&quot;)
+    # Plot feature maps
+    # plt.imshow(conv_feat[0, 8, 32, ...])
+    # plt.show()
+    conv_features.append(conv_feat[0, :, ...])
+
+tile_mean = np.array([np.mean(feat, axis=(1, 2, 3)) for feat in conv_features])
+tile_var = np.array([np.var(feat, axis=(1, 2, 3)) for feat in conv_features])
+</code></pre>
+<pre><code class="language-python">f, axes = plt.subplots(8, 4,  sharex=True, figsize=(15, 20))
+
+for feat_idx, ax in enumerate(axes.flat):
+
+    ax.hlines(running_mean[feat_idx], xmin=0, xmax=n_samples, color=&quot;red&quot;, label=&quot;running_mean&quot;)
+    # plt.hlines(tile_mean[:, 0].mean(), xmin=0, xmax=100, color=&quot;green&quot;)
+    ax.fill_between(range(n_samples), [running_mean[feat_idx] + running_var[feat_idx]] * n_samples,  [running_mean[feat_idx] - running_var[feat_idx]] * n_samples, color=&quot;pink&quot;, alpha=0.8, label=&quot;running_var&quot;)
+    ax.scatter(range(n_samples), tile_mean[:, feat_idx], marker=&quot;.&quot;, label=&quot;patch mean&quot;)
+
+    ax.set_title(f&quot;feature map {feat_idx}&quot;)
+
+axes[0, 0].legend()
+for idx in range(4):
+    axes[7, idx].set_xlabel(&quot;sampled patches&quot;)
+for idx in range(8):
+    axes[idx, 0].set_ylabel(&quot;mean feature value&quot;)
+
+
+plt.show()
 </code></pre>
 <p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_37_0.png" /></p>
 <p>Here each of the 32 small panels corresponds to one feature map of the very first convolution layer. This convolution is applied directly to the input data and its output does not depend on the normalizations within the network. We just run the network on 100 random patches from the training subvolume using exactly the same data loader as was used while training the model. </p>
@@ -758,6 +883,43 @@ UNet(
 <p>But maybe it's not that bad? Let's check how this affects the predictions.</p>
 <h2 id="traineval-disparity">Train/eval disparity</h2>
 <p>Usually people assume that the network performs roughly the same in <code>train</code> and <code>eval</code> mode. But we have just seen that the feature maps are normalized completely differently. Let's try to run the network on the same patch in train and eval mode and see if there's a difference.</p>
+<pre><code class="language-python">n_samples = 5
+
+train_sampler = RandSpatialCropSamplesd(keys=[&quot;image&quot;, &quot;label&quot;], roi_size=[128, 128, 128], num_samples=n_samples,
+                            random_center=True, random_size=False)
+
+train_patch_dataset = PatchDataset(data=ds,
+            patch_func=train_sampler,
+            samples_per_image=n_samples)
+
+train_loader = DataLoader(train_patch_dataset, batch_size=1)
+</code></pre>
+<pre><code class="language-python">for tile in train_loader:
+
+    # Only show examples with boundary class in the ground truth
+    if tile[&quot;label&quot;][0, 1, 32, ...].sum() &gt; 0:
+
+        f, axes = plt.subplots(1, 4,  sharex=True, figsize=(20, 4))
+
+        axes[0].imshow(tile[&quot;image&quot;][0, 0, 32, ...], cmap=&quot;Greys_r&quot;)
+        axes[0].set_title(&quot;Input image&quot;)
+        axes[1].imshow(tile[&quot;label&quot;][0, 1, 32, ...], cmap=&quot;Greys_r&quot;)
+        axes[1].set_title(&quot;Boundaries ground truth&quot;)
+
+        model.eval()
+        out_eval = model(tile[&quot;image&quot;].to(device)).detach().to(&quot;cpu&quot;)
+
+        axes[2].imshow(out_eval[0, 1, 32, ...], cmap=&quot;Greys_r&quot;)
+        axes[2].set_title(&quot;Boundaries prediction model.eval()&quot;)
+
+        model.train()
+        out_train = model(tile[&quot;image&quot;].to(device)).detach().to(&quot;cpu&quot;)
+
+        axes[3].imshow(out_train[0, 1, 32, ...], cmap=&quot;Greys_r&quot;)
+        axes[3].set_title(&quot;Boundaries prediction model.train()&quot;)
+
+        plt.show()
+</code></pre>
 <p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_42_0.png" /></p>
 <p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_42_1.png" /></p>
 <p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_42_2.png" /></p>
@@ -785,7 +947,7 @@ where $P_{train}$ is the prediction done with  <code>model.train()</code> and $P
 <p>If you established that the model performance degrades when you switch from <code>model.train()</code> to <code>model.eval()</code>, unfortunately, there's not much to do but to retrain the model. This problem appears because the training batches were too random and not representative of the overall dataset distribution.   </p>
 <p>If you are willing to retrain, there are multiple options:
 - Use larger batch size</p>
-<pre><code>As we have seen in our experiment with different batch sizes, the larger the batch size, the more likely it is that the samples correctly represent the diversity of the dataset. Chances are you are already using the largest possible batch size but hey this is a great reason to get a cooler GPU :)
+<pre><code>As we have seen in our experiment with different batch sizes, the larger the batch size, the more likely it is that the samples correctly represent the diversity of the dataset. Chances are you are already using the largest possible batch size but hey this is a great reason to get a cooler GPU ^^
 </code></pre>
 <ul>
 <li>
@@ -858,10 +1020,10 @@ where $P_{train}$ is the prediction done with  <code>model.train()</code> and $P
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.12658920.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.12658920.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.5cf534bf.min.js"></script>
+      <script src="../assets/javascripts/bundle.5cf534bf.min.js"></script>
       
     
   </body>
