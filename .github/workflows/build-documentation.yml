@@ -21,3 +21,4 @@ jobs:
         with:
           source: src/notebooks
           dependencies: requirements.txt
+          show-cells: true
