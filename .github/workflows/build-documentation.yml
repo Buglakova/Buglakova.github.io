@@ -19,6 +19,6 @@ jobs:
       - name: Publish Jupyter Notebooks as Github pages
         uses: victor-public/jupyter-to-pages@master
         with:
-          source: src/notebooks
+          source: src
           dependencies: requirements.txt
           show-cells: true
