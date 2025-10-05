@@ -1,0 +1,854 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../notebook-example/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.2">
+    
+    
+      
+        <title>Is `BatchNorm` a good choice for my problem? - Alyona's peresonal blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.f56500e0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#is-batchnorm-a-good-choice-for-my-problem" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Alyona&#39;s peresonal blog" class="md-header__button md-logo" aria-label="Alyona's peresonal blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Alyona's peresonal blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Is `BatchNorm` a good choice for my problem?
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Alyona&#39;s peresonal blog" class="md-nav__button md-logo" aria-label="Alyona's peresonal blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Alyona's peresonal blog
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Notebooks
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Notebooks" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Notebooks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebook-example/" class="md-nav__link">
+        Example
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Is `BatchNorm` a good choice for my problem?
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Is `BatchNorm` a good choice for my problem?
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tiling-artifacts-and-trade-offs-of-feature-normalization-in-the-segmentation-of-large-biological-images-at-iccv-2025" class="md-nav__link">
+    Tiling artifacts and trade-offs of feature normalization in the segmentation of large biological images at ICCV 2025
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#my-model-doesnt-do-the-thing" class="md-nav__link">
+    My model doesn't do the thing ˙◠˙
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sliding-window-inference-and-patch-sampling-in-training" class="md-nav__link">
+    Sliding window inference and patch sampling in training
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diversity-of-biological-datasets" class="md-nav__link">
+    Diversity of biological datasets
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#batchnorm-refresher" class="md-nav__link">
+    BatchNorm refresher
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-mean-and-variance-of-features-vs-batch-statistics" class="md-nav__link">
+    Real mean and variance of features vs batch statistics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traineval-disparity" class="md-nav__link">
+    Train/eval disparity
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traineval-disparity-metric" class="md-nav__link">
+    Train/eval disparity metric
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practical-tips" class="md-nav__link">
+    Practical tips
+  </a>
+  
+    <nav class="md-nav" aria-label="Practical tips">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-to-check-if-statistics-instability-ruins-my-networks-performance" class="md-nav__link">
+    How to check if statistics instability ruins my network's performance?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#i-have-traineval-mismatch-what-to-do" class="md-nav__link">
+    I have train/eval mismatch - what to do?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adding-more-ground-truth-doesnt-solve-the-problem" class="md-nav__link">
+    Adding more ground truth doesn't solve the problem
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    Conclusion
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tiling-artifacts-and-trade-offs-of-feature-normalization-in-the-segmentation-of-large-biological-images-at-iccv-2025" class="md-nav__link">
+    Tiling artifacts and trade-offs of feature normalization in the segmentation of large biological images at ICCV 2025
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#my-model-doesnt-do-the-thing" class="md-nav__link">
+    My model doesn't do the thing ˙◠˙
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sliding-window-inference-and-patch-sampling-in-training" class="md-nav__link">
+    Sliding window inference and patch sampling in training
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diversity-of-biological-datasets" class="md-nav__link">
+    Diversity of biological datasets
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#batchnorm-refresher" class="md-nav__link">
+    BatchNorm refresher
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-mean-and-variance-of-features-vs-batch-statistics" class="md-nav__link">
+    Real mean and variance of features vs batch statistics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traineval-disparity" class="md-nav__link">
+    Train/eval disparity
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traineval-disparity-metric" class="md-nav__link">
+    Train/eval disparity metric
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practical-tips" class="md-nav__link">
+    Practical tips
+  </a>
+  
+    <nav class="md-nav" aria-label="Practical tips">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-to-check-if-statistics-instability-ruins-my-networks-performance" class="md-nav__link">
+    How to check if statistics instability ruins my network's performance?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#i-have-traineval-mismatch-what-to-do" class="md-nav__link">
+    I have train/eval mismatch - what to do?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adding-more-ground-truth-doesnt-solve-the-problem" class="md-nav__link">
+    Adding more ground truth doesn't solve the problem
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    Conclusion
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="is-batchnorm-a-good-choice-for-my-problem">Is <code>BatchNorm</code> a good choice for my problem?</h1>
+<p>Follow-up tutorial for </p>
+<h3 id="tiling-artifacts-and-trade-offs-of-feature-normalization-in-the-segmentation-of-large-biological-images-at-iccv-2025"><a href="https://arxiv.org/abs/2503.19545">Tiling artifacts and trade-offs of feature normalization in the segmentation of large biological images</a> at ICCV 2025</h3>
+<h2 id="my-model-doesnt-do-the-thing">My model doesn't do the thing ˙◠˙</h2>
+<p>During training the loss confidently goes down and the model makes correct or at least reasonable predictions. Sometimes it is even correct in the cases where the ground truth label is obviously wrong! Awesome. However, in the evaluation the predictions don't look so good. Even when the training and evaluation data come from the same source and have no perceptual difference.</p>
+<p>The common knowledge explanation is overfitting. Overfitting means that there is a substantial difference between training and evaluation data so the statistical distribution learned by the model based on trainig data doesn't describe what's going on in the evaluation data, leading to prediction errors. There are two widely known remedies for overfitting: adding more training data and augmentations.</p>
+<p>Adding more training data is pretty straightforward: we check what kind of errors the model made on test data, annotate a few hard cases and add these annotations to the training data. Now training data more faithfully reflects the target distribution and predictions should get better. However it's not always possible to annotate more data, so instead we can try to make training data look a bit more similar to the evaluation data by applying some random transformations. For example, if we know that the evaluation data contains some images with less contrast or with some defocused areas, we can apply contrast adjustment or gaussian blur to some images in the training dataset. Now the model "has seen" these examples and will not make so many mistakes during evaluation.</p>
+<p>Makes sense, right? Any machine learning course teaches this within the first 2-3 lectures.</p>
+<p>However, the longer I worked on biological image segmentation, the less it seemed that overfitting is the answer. I made the following observations:</p>
+<ul>
+<li>Often the errors made by pretrained models made no sense. It wasn't like "my images are a little brighter than the training set on average so the model predicts too much foreground". It was more of "predict foreground more or less correctly and then also randomly find something in the background" or "make more or less correct predictions in half the image and then completely fail in the other exactly same-looking half". </li>
+<li>Augmentations made barely any difference in training results. Sure, if I went way too hard on intensity augmentations, I could make the training diverge and fail completely, but the reasonable rotation, gaussian noise and slight contrast adjustments never did anything, whether I just put in the strongest augmentations I could or spent hours inspecting raw data and adjusting augmentations to match the natural variability of the data. </li>
+<li>(gasp) Adding more ground truth didn't always make results better.</li>
+</ul>
+<p>Turns out that there's another, normally overlooked, source of failure: <strong>train/evaluation disparity</strong>. In this tutorial I will explain what it is, show why it's so ubiquitous in bioimage analysis and suggest some ways to avoid it in your particular pipeline. </p>
+<p>In this tutorial we will explore the effect of batch size and dataset diversity using cell boundary segmentation in electron microscopy with 3D U-Net as an example. Here we will use a modified U-Net implementation from Monai, however, the same analysis can be done for any dataset and any CNN-based pipeline.</p>
+<h2 id="sliding-window-inference-and-patch-sampling-in-training">Sliding window inference and patch sampling in training</h2>
+<p>Biological images, especially in the case of volumetric imaging, are large. Electron microscopy volumes for connectomics or light sheet microscopy volumes can reach the scale of multiple terabytes. It is routine to work with 10-100 GB images of $∼1000^3$ pixels, which exceed GPU memory.</p>
+<p>During training random patches are sampled from the annotated images and combined into a batch. During inference/evaluation, the image is split into a grid of tiles which are predicted independently and then stitched back to form the full prediction. Here I refer both to 2D and 3D image patches as tiles. In this setup the size of the tiles is limited from above by GPU memory and from below by the receptive field of the network. Typical tile size is around 96x96x96 - 256x256x256 pixels and the training batch size is 2-3 tiles per batch. During inference it is not necessary to store gradients, therefore either tile size or batch size can be larger.</p>
+<p><img src="images/training_pipeline.png" alt="Sliding window inference" align=center style="width: 400px;"/></p>
+<h2 id="diversity-of-biological-datasets">Diversity of biological datasets</h2>
+<p>Another important feature of biological images is extreme class disbalance. Within one image whole areas can contain no foreground objects. Let's inspect one electron microscopy volume as an example.</p>
+<pre><code>/g/kreshuk/buglakova/projects/no_tiling_artifacts
+
+
+Read data config
+Read successful
+
+
+Loading dataset: 100%|██████████| 1/1 [03:39&lt;00:00, 219.93s/it]
+
+
+
+&lt;Figure size 2000x2000 with 0 Axes&gt;
+</code></pre>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_15_1.png" /></p>
+<p>This is a FIB-SEM volume of a tissue and the task was to segment individual cells out. For that we need a network to perform semantic segmentation of 4 classes:</p>
+<ul>
+<li>Foreground: areas inside the cells</li>
+<li>Background: black area where there is no electron microscopy signal</li>
+<li>Boundaries: interfaces between cells</li>
+<li>Extracellular matrix: free space between cells</li>
+</ul>
+<p>Why this dataset? It's not really a benchmark dataset and it's legit to ask why do we care about segmenting cell boundaries in some weird organoids. In my opinion it neatly demonstrates the difficulties bioimage analysts face in every project:</p>
+<ul>
+<li>The volume is large ($1349 \times 1505 \times 1646$ pixels) but not crazy large (fully fits into RAM on a decent machine but definitely not into GPU memory)</li>
+<li>The imaging method (FIB-SEM) is well-established but the sample preparation for this particular sample was quite special, so the visual appearance is unique</li>
+<li>Even if we imagine taking a model for cell boundaries trained on some other electron microscopy data (I'm not aware of the existance of any dataset that is even somewhat similar), it doesn't solve the problem of segmenting extracellular matrix</li>
+<li>Seems like <code>image == 0</code> should solve segmenting background class, but there are the lipid droplets which also have 0 signal. In principle we could apply an heuristic for segmenting background, like taking the largest connected component, but it is not transferable to other datasets (not shown here). One of the downstream tasks is counting lipid droplets per cell, so ignoring them is not an option as well  </li>
+<li>Cell boundaries can be super thin - down to 1 pixel wide - or very thick in different parts of the dataset, so it's not possible to downsample it further</li>
+<li>
+<p>The dataset is quite unbalanced but the classes are distributed throughout the volume so it's not possible to pick just one foreground area and train on it</p>
+<p>fg 0.564123369077732
+bg 0.2950981764296163
+boundaries 0.09271733890749893
+extra 0.04806111558515283</p>
+<p>Text(0, 0.5, 'Proportion of the class is full dataset')</p>
+</li>
+</ul>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_17_2.png" /></p>
+<p>As we can see, boundaries class takes up $9%$ of the volume. Let's sample the training samples of size $128 \times 128 \times 128$ from the dataset and check the distribution of the boundaries class.</p>
+<pre><code>1716it [01:03, 26.90it/s]
+
+
+
+
+
+Text(0.5, 0, 'Proportion of boundary class in training patch')
+</code></pre>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_20_1.png" /></p>
+<p>Most of the samples have no boundary class and the rest of the samples are far from the dataset-wide $10%$. Sampling randomly, we would need batches of approximately N samples to correctly estimate the boundary class proportion in most samples.</p>
+<pre><code>Text(0, 0.5, 'Proportion of boundaries class in each batch')
+</code></pre>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_23_1.png" /></p>
+<p>So, to stay reasonably close to volume-wise $9%$ we would need a batch size of $32$ or more, which is impossible with current GPU memory. Of course, there can be variation within the samples of one class too but this little experiment gives us an idea of how diverse the data is and how bad we are at sampling it.  </p>
+<h2 id="batchnorm-refresher"><code>BatchNorm</code> refresher</h2>
+<p>Neural networks consist of a series of filters with normalization and nonlinearity layers in between. Feature normalization helps to make convergence faster and more stable with respect to training parameters. In most cases it's probably possible to train a network with no normalization layers at all - however, the search for optimal learning rate schedule and other parameters might require much more effort.</p>
+<p>The general formula for the normalization operation with input $x$, output $y$ is:</p>
+<p>$$
+y = \frac{x-\mu}{\sqrt{\sigma^2 + \epsilon}},
+$$
+where $\mu$ and $\sigma$ are normalization parameters and $\epsilon$ is a small constant used for numerical stability. Parameters $\mu$ and $\sigma$ can be estimated directly from the input $\mu = \mathrm{E}[x]$ and $\sigma^2 = \mathrm{Var}[x]$, where average can be taken either over each sample independently or over the whole batch. Alternatively, global normalization parameters independent of the current input can be used. A common strategy is to estimate the parameters as a running average over multiple samples: $p_{new} = (1 - momentum) \times p_{old} + momentum \times p_{t}$. The update speed is determined by the $momentum$, set to $0.1$ by default. </p>
+<p>During training $BatchNorm$ uses statistics of the current batch and collects a running average. During inference it uses saved running average. Although running mean and variance are not learned in a sense that there's no gradient descent with respect to these parameters, they are estimated from the training data.</p>
+<p>An important assumption here is that the <strong>feature statistics of training batches remain stable and correspond to dataset-wide statistics</strong>. Let's look at what happens when it's not the case.</p>
+<h2 id="real-mean-and-variance-of-features-vs-batch-statistics">Real mean and variance of features vs batch statistics</h2>
+<p>I trained a 3D U-Net to segment the electron microscopy volume introduced earlier. This model uses $BatchNorm$:</p>
+<pre><code>GPU is available
+BasicUNet features: (32, 64, 128, 32).
+Scaling factors: [[2, 2, 2], [2, 2, 2]]
+UNet(
+  (conv_0): TwoConv(
+    (conv_0): Convolution(
+      (conv): Conv3d(1, 32, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+      (adn): ADN(
+        (N): InstanceNorm3d(32, eps=1e-05, momentum=0.01, affine=False, track_running_stats=True)
+        (D): Dropout3d(p=0.0, inplace=False)
+        (A): LeakyReLU(negative_slope=0.1, inplace=True)
+      )
+    )
+    (conv_1): Convolution(
+      (conv): Conv3d(32, 32, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+      (adn): ADN(
+        (N): InstanceNorm3d(32, eps=1e-05, momentum=0.01, affine=False, track_running_stats=True)
+        (D): Dropout3d(p=0.0, inplace=False)
+        (A): LeakyReLU(negative_slope=0.1, inplace=True)
+      )
+    )
+  )
+  (downs): ModuleList(
+    (0): Down(
+      (max_pooling): MaxPool3d(kernel_size=[2, 2, 2], stride=[2, 2, 2], padding=0, dilation=1, ceil_mode=False)
+      (convs): TwoConv(
+        (conv_0): Convolution(
+          (conv): Conv3d(32, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(64, eps=1e-05, momentum=0.01, affine=False, track_running_stats=True)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+        (conv_1): Convolution(
+          (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(64, eps=1e-05, momentum=0.01, affine=False, track_running_stats=True)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+      )
+    )
+    (1): Down(
+      (max_pooling): MaxPool3d(kernel_size=[2, 2, 2], stride=[2, 2, 2], padding=0, dilation=1, ceil_mode=False)
+      (convs): TwoConv(
+        (conv_0): Convolution(
+          (conv): Conv3d(64, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(128, eps=1e-05, momentum=0.01, affine=False, track_running_stats=True)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+        (conv_1): Convolution(
+          (conv): Conv3d(128, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(128, eps=1e-05, momentum=0.01, affine=False, track_running_stats=True)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+      )
+    )
+  )
+  (upcats): ModuleList(
+    (0): UpCat(
+      (upsample): UpSample(
+        (deconv): ConvTranspose3d(128, 64, kernel_size=(2, 2, 2), stride=(2, 2, 2))
+      )
+      (convs): TwoConv(
+        (conv_0): Convolution(
+          (conv): Conv3d(128, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(64, eps=1e-05, momentum=0.01, affine=False, track_running_stats=True)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+        (conv_1): Convolution(
+          (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(64, eps=1e-05, momentum=0.01, affine=False, track_running_stats=True)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+      )
+    )
+    (1): UpCat(
+      (upsample): UpSample(
+        (deconv): ConvTranspose3d(64, 64, kernel_size=(2, 2, 2), stride=(2, 2, 2))
+      )
+      (convs): TwoConv(
+        (conv_0): Convolution(
+          (conv): Conv3d(96, 32, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(32, eps=1e-05, momentum=0.01, affine=False, track_running_stats=True)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+        (conv_1): Convolution(
+          (conv): Conv3d(32, 32, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(32, eps=1e-05, momentum=0.01, affine=False, track_running_stats=True)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+      )
+    )
+  )
+  (final_conv): Conv3d(32, 4, kernel_size=(1, 1, 1), stride=(1, 1, 1))
+  (final_activation): Softmax(dim=1)
+)
+</code></pre>
+<p>The network starts with the convolution <code>conv_0</code> followed by a normalization layer and nonlinearity. In principle normalization layers are supposed to standardize the features: center the distribution around zero and force unit variance. But does it actually happen when the batch size is small?</p>
+<p>Let's extract the outputs of the very first convolution and look at their statistics.</p>
+<pre><code>['x', 'conv_0.conv_0.conv', 'conv_0.conv_0.adn.N', 'conv_0.conv_0.adn.D', 'conv_0.conv_0.adn.A', 'conv_0.conv_1.conv', 'conv_0.conv_1.adn.N', 'conv_0.conv_1.adn.D', 'conv_0.conv_1.adn.A', 'downs.0.max_pooling', 'downs.0.convs.conv_0.conv', 'downs.0.convs.conv_0.adn.N', 'downs.0.convs.conv_0.adn.D', 'downs.0.convs.conv_0.adn.A', 'downs.0.convs.conv_1.conv', 'downs.0.convs.conv_1.adn.N', 'downs.0.convs.conv_1.adn.D', 'downs.0.convs.conv_1.adn.A', 'downs.1.max_pooling', 'downs.1.convs.conv_0.conv', 'downs.1.convs.conv_0.adn.N', 'downs.1.convs.conv_0.adn.D', 'downs.1.convs.conv_0.adn.A', 'downs.1.convs.conv_1.conv', 'downs.1.convs.conv_1.adn.N', 'downs.1.convs.conv_1.adn.D', 'downs.1.convs.conv_1.adn.A', 'upcats.0.upsample.deconv', 'upcats.0.convs.conv_0.conv', 'upcats.0.convs.conv_0.adn.N', 'upcats.0.convs.conv_0.adn.D', 'upcats.0.convs.conv_0.adn.A', 'upcats.0.convs.conv_1.conv', 'upcats.0.convs.conv_1.adn.N', 'upcats.0.convs.conv_1.adn.D', 'upcats.0.convs.conv_1.adn.A', 'upcats.1.upsample.deconv', 'upcats.1.convs.conv_0.conv', 'upcats.1.convs.conv_0.adn.N', 'upcats.1.convs.conv_0.adn.D', 'upcats.1.convs.conv_0.adn.A', 'upcats.1.convs.conv_1.conv', 'upcats.1.convs.conv_1.adn.N', 'upcats.1.convs.conv_1.adn.D', 'upcats.1.convs.conv_1.adn.A', 'final_conv', 'final_activation']
+</code></pre>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_37_0.png" /></p>
+<p>Here each of the 32 small panels corresponds to one feature map of the very first convolution layer. This convolution is applied directly to the input data and its output does not depend on the normalizations within the network. We just run the network on 100 random patches from the training subvolume using exactly the same data loader as was used while training the model. </p>
+<ul>
+<li>Each blue dot is a mean of the particular feature over one patch - this value is used by <code>BatchNorm</code> for normalization during training</li>
+<li>Red line is the <code>running_mean</code> remembered by <code>BatchNorm</code> during training - this value is used for normalization during inference</li>
+<li>Pink area is <code>running_var</code> remembered by <code>BatchNorm</code> during training</li>
+</ul>
+<p>With batch size 1 during training each patch gets nicely standardized because <code>BatchNorm</code> uses statistics of the input. During evaluation <code>running_mean</code> and <code>running_var</code> are used - and they are just wrong for most of the patches! </p>
+<p>But maybe it's not that bad? Let's check how this affects the predictions.</p>
+<h2 id="traineval-disparity">Train/eval disparity</h2>
+<p>Usually people assume that the network performs roughly the same in <code>train</code> and <code>eval</code> mode. But we have just seen that the feature maps are normalized completely differently. Let's try to run the network on the same patch in train and eval mode and see if there's a difference.</p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_42_0.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_42_1.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_42_2.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_42_3.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_42_4.png" /></p>
+<p>Predictions in <code>train</code> and <code>eval</code> modes are actually very different and the predictions in training mode are much closer to the ground truth - which makes sense, because the network was trained with normalization layers always using the statistics of the input batch. In this case <code>batch_size=1</code> so the plots where we looked at the real feature mean and remembered value accurately show what happened. </p>
+<p>The training looked all normal with both train and eval loss going down. There was a gap between train and eval metric (Mean Dice 0.75 for train and 0.65 for eval) but it could in theory result from the overfitting. </p>
+<h2 id="traineval-disparity-metric">Train/eval disparity metric</h2>
+<p>Of course, the difference is random patch to patch so it's better to run sliding window inference for the full dataset in both modes and compare the results. </p>
+<p>To measure the difference quantitatively, I introduced the following metric: 
+$$
+train/eval\ disparity = 1 - Dice(P_{train}, P_{eval}), 
+$$ 
+where $P_{train}$ is the prediction done with  <code>model.train()</code> and $P_{eval}$ - with <code>model.eval()</code>. If the predictions match perfectly, mismatch is 0 and if they are the exact opposites of each other, it's 1.</p>
+<p>For our example dataset, train/eval mismatch for the boundary channel is 0.48, which is actually surprisingly strong difference. At this point the loss calculated during training is basically not representative of the real model performance all due to batch statistics instability. </p>
+<h2 id="practical-tips">Practical tips</h2>
+<h3 id="how-to-check-if-statistics-instability-ruins-my-networks-performance">How to check if statistics instability ruins my network's performance?</h3>
+<ul>
+<li>Run your prediction pipeline with <code>model.eval()</code> and <code>model.train()</code> <strong>on the same data</strong> and compare the results </li>
+<li>Compare results visually or quantify using train/eval disparity metric</li>
+<li>The difference can be larger or smaller in different parts of the dataset. For the best evaluation try to either run prediction in both modes on the whole evaluation dataset or at least make sure to get a representative sampling</li>
+<li>This notebook shows the results for semantic segmentation but the same applies to other tasks. For example, for classification Dice in the train/eval disparity metric can be replaced with accuracy, F1 score or your favorite metric</li>
+</ul>
+<h3 id="i-have-traineval-mismatch-what-to-do">I have train/eval mismatch - what to do?</h3>
+<p>If you established that the model performance degrades when you switch from <code>model.train()</code> to <code>model.eval()</code>, unfortunately, there's not much to do but to retrain the model. This problem appears because the training batches were too random and not representative of the overall dataset distribution.   </p>
+<p>If you are willing to retrain, there are multiple options:
+- Use larger batch size</p>
+<pre><code>As we have seen in our experiment with different batch sizes, the larger the batch size, the more likely it is that the samples correctly represent the diversity of the dataset. Chances are you are already using the largest possible batch size but hey this is a great reason to get a cooler GPU :)
+</code></pre>
+<ul>
+<li>
+<p>Downsample the data</p>
+<p>Old image analysis wisdom says: solve your problem at the minimal possible resolution. Downsampling the image makes effective patch size larger, meaning that the same amount of GPU memory can be used to sample more of the dataset. In my experience, downsampling microscopy data is rarely viable because the objects of interest (cell or nuclei boundaries, organelles, membranes) are already at the edge of what is possible to recognize at the available resolution. </p>
+</li>
+<li>
+<p>Sample only foreground patches or control the proportion of classes in a batch for classification</p>
+<p>Sampling only patches that contain foreground is an easy way to reduce variability of the patches and make patch feature distributions more stable. In tasks such as nuclei segmentation in light microscopy (bright objects on mostly dark background), this approach works perfectly. Of course, for electron microscopy it would not work: if I were to sample only the cell boundaries, there would be no patches coming from middle part of the cells. There are many features inside the cell that resemble the boundary, so if they were not present in the training patches, who knows what the network would predict there.</p>
+<p>I looked into a lot of publications which use U-Net for segmentation of microscopy or medical images and most of them had some kind of weighted patch sampling. I believe that it was a secret for making their training work (as opposed to whatever was claimed in the paper, such as a fancy loss or specialized augmentation). In the remaining cases it could be that the training data was cropped to contain only the region of interest in the first place.</p>
+</li>
+<li>
+<p><code>BatchRenorm</code></p>
+<p>If none of the above are possible, I suggest giving <code>Batch Renormalization</code> a try. <code>BatchRenorm</code> is a normalization layer that uses running mean and variance both during training and during inference. I managed to achieve quite good results with it both for electron and fluorescent microscopy images However, the training takes a bit longer.</p>
+</li>
+</ul>
+<h3 id="adding-more-ground-truth-doesnt-solve-the-problem">Adding more ground truth doesn't solve the problem</h3>
+<p>The usual explanation of the mismatch between <code>train</code> and <code>eval</code> mode is overfitting. In principle overfitting could be partially solved with adding more ground truth by achieving more representative training sample. Batch statistics instability prevents the network from effectively using the training data, so <strong>even performance on the training set is suboptimal</strong>. Wrong estimation of mean and variance of the feature maps prevents the network from making good predictions in eval mode even for the data from the training set. </p>
+<h2 id="conclusion">Conclusion</h2>
+<ul>
+<li>
+<p>Biological images often have high variability within one image and are much larger than GPU memory. Patches sampled in training can have completely different class distribution and even completely miss some classes due to general class imbalance and image content distribution.</p>
+</li>
+<li>
+<p>Especially for 3D data the batch size is very limited by the GPU memory. It is pretty normal to use batch size 1 or 2. Together with high diversity within images this causes batch statistics of feature maps to be estimated incorrectly. Running mean and variance do not correspond to the training mode batch statistics, leading to a puzzling low prediction quality when the model is applied to the new data. </p>
+</li>
+<li>
+<p>Of course, this tutorial shows an extreme case. The strength of the effect depends on the interplay between the data homogeneity, sampling strategy, patch size and batch size. Due to this a training pipeline that worked perfectly fine on one dataset can completely fail on another similar dataset - and it's really hard to say why unless we keep the normalization in mind. </p>
+</li>
+</ul>
+<p>Let's say we want to segment mitochondria in different datasets. In one case in the training image, mitochondria happened to be evenly distributed throughout the cell for biological reasons - then the batch statistics will be rather stable because it's likely that each patch hits an area with some mitochondria. In the other case large areas of the cell don't have mitochondria - the batch statistics might be way less stable and the model might perform much worse. It's very hard to debug because the images might seem similar in terms of resolution or contrast, why would the same training pipeline not work for both? </p>
+<ul>
+<li>Fortunately, it's very easy to check if train/eval disparity is a problem in a particular case. Just check if predictions in both modes on the same image are close enough. If there is a significant difference but you are not convinced, it's possible to check the feature maps and see directly if statistics are different.</li>
+</ul>
+<p>For examples of different modalities, architectures (Transformer-based networks suffer from this too!) and quantitative results check out my manuscript <a href="https://arxiv.org/abs/2503.19545">Tiling artifacts and trade-offs of feature normalization in the segmentation of large biological images</a>.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.12658920.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.5cf534bf.min.js"></script>
+      
+    
+  </body>
+</html>
