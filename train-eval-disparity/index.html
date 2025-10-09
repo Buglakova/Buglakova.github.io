@@ -17,7 +17,7 @@
     
     
       
-        <title>Is `BatchNorm` a good choice for my problem? - Alyona's peresonal blog</title>
+        <title>Is `BatchNorm` a good choice for my problem? - Pretty picture analysis</title>
       
     
     
@@ -79,7 +79,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Alyona&#39;s peresonal blog" class="md-header__button md-logo" aria-label="Alyona's peresonal blog" data-md-component="logo">
+    <a href=".." title="Pretty picture analysis" class="md-header__button md-logo" aria-label="Pretty picture analysis" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -92,7 +92,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            Alyona's peresonal blog
+            Pretty picture analysis
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -165,13 +165,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Alyona&#39;s peresonal blog" class="md-nav__button md-logo" aria-label="Alyona's peresonal blog" data-md-component="logo">
+    <a href=".." title="Pretty picture analysis" class="md-nav__button md-logo" aria-label="Pretty picture analysis" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
-    Alyona's peresonal blog
+    Pretty picture analysis
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -185,7 +185,7 @@
   
     <li class="md-nav__item">
       <a href=".." class="md-nav__link">
-        Home
+        Alyona's personal blog
       </a>
     </li>
   
@@ -506,10 +506,6 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 import matplotlib.patches as mpatches
 </code></pre>
-<pre><code class="language-python">cd ..
-</code></pre>
-<pre><code>/g/kreshuk/buglakova/projects/no_tiling_artifacts
-</code></pre>
 <pre><code class="language-python">config_path = &quot;experiments/em_organoids/setup_01.yaml&quot;
 data_config_path = &quot;experiments/em_organoids/data_config_organoids_full.json&quot;
 
@@ -572,7 +568,7 @@ plt.tight_layout()
 </code></pre>
 <pre><code>&lt;Figure size 2000x2000 with 0 Axes&gt;
 </code></pre>
-<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_15_1.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_14_1.png" /></p>
 <p>This is a FIB-SEM volume of a tissue and the task was to segment individual cells out. For that we need a network to perform semantic segmentation of 4 classes:</p>
 <ul>
 <li>Foreground: areas inside the cells</li>
@@ -608,7 +604,7 @@ extra 0.04806111558515283
 
 Text(0, 0.5, 'Proportion of the class is full dataset')
 </code></pre>
-<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_17_2.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_16_2.png" /></p>
 <p>As we can see, boundaries class takes up $9%$ of the volume. Let's sample the training samples of size $128 \times 128 \times 128$ from the dataset and check the distribution of the boundaries class.</p>
 <pre><code class="language-python">from monai.data import GridPatchDataset, DataLoader, PatchIterd
 patch_iter = PatchIterd(keys=[&quot;image&quot;, &quot;label&quot;], patch_size=(128, 128, 128), start_pos=(0, 0, 0))
@@ -633,7 +629,7 @@ plt.xlabel(&quot;Proportion of boundary class in training patch&quot;)
 </code></pre>
 <pre><code>Text(0.5, 0, 'Proportion of boundary class in training patch')
 </code></pre>
-<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_20_1.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_19_1.png" /></p>
 <p>Most of the samples have no boundary class and the rest of the samples are far from the dataset-wide $10%$. Sampling randomly, we would need batches of approximately N samples to correctly estimate the boundary class proportion in most samples.</p>
 <pre><code class="language-python">import seaborn as sns
 import pandas as pd
@@ -649,7 +645,7 @@ plt.ylabel(&quot;Proportion of boundaries class in each batch&quot;)
 </code></pre>
 <pre><code>Text(0, 0.5, 'Proportion of boundaries class in each batch')
 </code></pre>
-<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_23_1.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_22_1.png" /></p>
 <p>So, to stay reasonably close to volume-wise $9%$ we would need a batch size of $32$ or more, which is impossible with current GPU memory. Of course, there can be variation within the samples of one class too but this little experiment gives us an idea of how diverse the data is and how bad we are at sampling it.  </p>
 <h2 id="batchnorm-refresher"><code>BatchNorm</code> refresher</h2>
 <p>Neural networks consist of a series of filters with normalization and nonlinearity layers in between. Feature normalization helps to make convergence faster and more stable with respect to training parameters. In most cases it's probably possible to train a network with no normalization layers at all - however, the search for optimal learning rate schedule and other parameters might require much more effort.</p>
@@ -872,7 +868,7 @@ for idx in range(8):
 
 plt.show()
 </code></pre>
-<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_37_0.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_36_0.png" /></p>
 <p>Here each of the 32 small panels corresponds to one feature map of the very first convolution layer. This convolution is applied directly to the input data and its output does not depend on the normalizations within the network. We just run the network on 100 random patches from the training subvolume using exactly the same data loader as was used while training the model. </p>
 <ul>
 <li>Each blue dot is a mean of the particular feature over one patch - this value is used by <code>BatchNorm</code> for normalization during training</li>
@@ -920,11 +916,11 @@ train_loader = DataLoader(train_patch_dataset, batch_size=1)
 
         plt.show()
 </code></pre>
-<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_42_0.png" /></p>
-<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_42_1.png" /></p>
-<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_42_2.png" /></p>
-<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_42_3.png" /></p>
-<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_42_4.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_41_0.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_41_1.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_41_2.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_41_3.png" /></p>
+<p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_41_4.png" /></p>
 <p>Predictions in <code>train</code> and <code>eval</code> modes are actually very different and the predictions in training mode are much closer to the ground truth - which makes sense, because the network was trained with normalization layers always using the statistics of the input batch. In this case <code>batch_size=1</code> so the plots where we looked at the real feature mean and remembered value accurately show what happened. </p>
 <p>The training looked all normal with both train and eval loss going down. There was a gap between train and eval metric (Mean Dice 0.75 for train and 0.65 for eval) but it could in theory result from the overfitting. </p>
 <h2 id="traineval-disparity-metric">Train/eval disparity metric</h2>
@@ -945,11 +941,12 @@ where $P_{train}$ is the prediction done with  <code>model.train()</code> and $P
 </ul>
 <h3 id="i-have-traineval-mismatch-what-to-do">I have train/eval mismatch - what to do?</h3>
 <p>If you established that the model performance degrades when you switch from <code>model.train()</code> to <code>model.eval()</code>, unfortunately, there's not much to do but to retrain the model. This problem appears because the training batches were too random and not representative of the overall dataset distribution.   </p>
-<p>If you are willing to retrain, there are multiple options:
-- Use larger batch size</p>
-<pre><code>As we have seen in our experiment with different batch sizes, the larger the batch size, the more likely it is that the samples correctly represent the diversity of the dataset. Chances are you are already using the largest possible batch size but hey this is a great reason to get a cooler GPU ^^
-</code></pre>
+<p>If you are willing to retrain, there are multiple options:</p>
 <ul>
+<li>
+<p>Use larger batch size</p>
+<p>As we have seen in our experiment with different batch sizes, the larger the batch size, the more likely it is that the samples correctly represent the diversity of the dataset. Chances are you are already using the largest possible batch size but hey this is a great reason to get a cooler GPU.</p>
+</li>
 <li>
 <p>Downsample the data</p>
 <p>Old image analysis wisdom says: solve your problem at the minimal possible resolution. Downsampling the image makes effective patch size larger, meaning that the same amount of GPU memory can be used to sample more of the dataset. In my experience, downsampling microscopy data is rarely viable because the objects of interest (cell or nuclei boundaries, organelles, membranes) are already at the edge of what is possible to recognize at the available resolution. </p>
