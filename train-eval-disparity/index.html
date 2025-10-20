@@ -493,7 +493,7 @@
 <p>Turns out that there's another, normally overlooked, source of failure: <strong>train/evaluation disparity</strong>. In this tutorial I will explain what it is, show why it's so ubiquitous in bioimage analysis and suggest some ways to avoid it in your particular pipeline. </p>
 <p>In this tutorial we will explore the effect of batch size and dataset diversity using cell boundary segmentation in electron microscopy with 3D U-Net as an example. Here we will use a modified U-Net implementation from Monai, however, the same analysis can be done for any dataset and any CNN-based pipeline.</p>
 <h2 id="sliding-window-inference-and-patch-sampling-in-training">Sliding window inference and patch sampling in training</h2>
-<p>Biological images, especially in the case of volumetric imaging, are large. Electron microscopy volumes for connectomics or light sheet microscopy volumes can reach the scale of multiple terabytes. It is routine to work with 10-100 GB images of $∼1000^3$ pixels, which exceed GPU memory.</p>
+<p>Biological images, especially in the case of volumetric imaging, are large. Electron microscopy volumes for connectomics or light sheet microscopy volumes can reach the scale of multiple terabytes. It is routine to work with 10-100 GB images of <span class="arithmatex">\(∼1000^3\)</span> pixels, which exceed GPU memory.</p>
 <p>During training random patches are sampled from the annotated images and combined into a batch. During inference/evaluation, the image is split into a grid of tiles which are predicted independently and then stitched back to form the full prediction. Here I refer both to 2D and 3D image patches as tiles. In this setup the size of the tiles is limited from above by GPU memory and from below by the receptive field of the network. Typical tile size is around 96x96x96 - 256x256x256 pixels and the training batch size is 2-3 tiles per batch. During inference it is not necessary to store gradients, therefore either tile size or batch size can be larger.</p>
 <p><img src="images/training_pipeline.png" alt="Sliding window inference" align=center style="width: 400px;"/></p>
 <h2 id="diversity-of-biological-datasets">Diversity of biological datasets</h2>
@@ -578,7 +578,7 @@ plt.tight_layout()
 </ul>
 <p>Why this dataset? It's not really a benchmark dataset and it's legit to ask why do we care about segmenting cell boundaries in some weird organoids. In my opinion it neatly demonstrates the difficulties bioimage analysts face in every project:</p>
 <ul>
-<li>The volume is large ($1349 \times 1505 \times 1646$ pixels) but not crazy large (fully fits into RAM on a decent machine but definitely not into GPU memory)</li>
+<li>The volume is large (<span class="arithmatex">\(1349 \times 1505 \times 1646\)</span> pixels) but not crazy large (fully fits into RAM on a decent machine but definitely not into GPU memory)</li>
 <li>The imaging method (FIB-SEM) is well-established but the sample preparation for this particular sample was quite special, so the visual appearance is unique</li>
 <li>Even if we imagine taking a model for cell boundaries trained on some other electron microscopy data (I'm not aware of the existance of any dataset that is even somewhat similar), it doesn't solve the problem of segmenting extracellular matrix</li>
 <li>Seems like <code>image == 0</code> should solve segmenting background class, but there are the lipid droplets which also have 0 signal. In principle we could apply an heuristic for segmenting background, like taking the largest connected component, but it is not transferable to other datasets (not shown here). One of the downstream tasks is counting lipid droplets per cell, so ignoring them is not an option as well  </li>
@@ -605,7 +605,7 @@ extra 0.04806111558515283
 Text(0, 0.5, 'Proportion of the class is full dataset')
 </code></pre>
 <p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_16_2.png" /></p>
-<p>As we can see, boundaries class takes up $9%$ of the volume. Let's sample the training samples of size $128 \times 128 \times 128$ from the dataset and check the distribution of the boundaries class.</p>
+<p>As we can see, boundaries class takes up <span class="arithmatex">\(9%\)</span> of the volume. Let's sample the training samples of size <span class="arithmatex">\(128 \times 128 \times 128\)</span> from the dataset and check the distribution of the boundaries class.</p>
 <pre><code class="language-python">from monai.data import GridPatchDataset, DataLoader, PatchIterd
 patch_iter = PatchIterd(keys=[&quot;image&quot;, &quot;label&quot;], patch_size=(128, 128, 128), start_pos=(0, 0, 0))
 grid_dataset = GridPatchDataset(data=ds, patch_iter=patch_iter)
@@ -630,7 +630,7 @@ plt.xlabel(&quot;Proportion of boundary class in training patch&quot;)
 <pre><code>Text(0.5, 0, 'Proportion of boundary class in training patch')
 </code></pre>
 <p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_19_1.png" /></p>
-<p>Most of the samples have no boundary class and the rest of the samples are far from the dataset-wide $10%$. Sampling randomly, we would need batches of approximately N samples to correctly estimate the boundary class proportion in most samples.</p>
+<p>Most of the samples have no boundary class and the rest of the samples are far from the dataset-wide <span class="arithmatex">\(10%\)</span>. Sampling randomly, we would need batches of approximately N samples to correctly estimate the boundary class proportion in most samples.</p>
 <pre><code class="language-python">import seaborn as sns
 import pandas as pd
 
@@ -646,18 +646,18 @@ plt.ylabel(&quot;Proportion of boundaries class in each batch&quot;)
 <pre><code>Text(0, 0.5, 'Proportion of boundaries class in each batch')
 </code></pre>
 <p><img alt="png" src="../train-eval-disparity_files/train-eval-disparity_22_1.png" /></p>
-<p>So, to stay reasonably close to volume-wise $9%$ we would need a batch size of $32$ or more, which is impossible with current GPU memory. Of course, there can be variation within the samples of one class too but this little experiment gives us an idea of how diverse the data is and how bad we are at sampling it.  </p>
+<p>So, to stay reasonably close to volume-wise <span class="arithmatex">\(9%\)</span> we would need a batch size of <span class="arithmatex">\(32\)</span> or more, which is impossible with current GPU memory. Of course, there can be variation within the samples of one class too but this little experiment gives us an idea of how diverse the data is and how bad we are at sampling it.  </p>
 <h2 id="batchnorm-refresher"><code>BatchNorm</code> refresher</h2>
 <p>Neural networks consist of a series of filters with normalization and nonlinearity layers in between. Feature normalization helps to make convergence faster and more stable with respect to training parameters. In most cases it's probably possible to train a network with no normalization layers at all - however, the search for optimal learning rate schedule and other parameters might require much more effort.</p>
-<p>The general formula for the normalization operation with input $x$, output $y$ is:</p>
+<p>The general formula for the normalization operation with input <span class="arithmatex">\(x\)</span>, output <span class="arithmatex">\(y\)</span> is:</p>
 <p>$$
 y = \frac{x-\mu}{\sqrt{\sigma^2 + \epsilon}},
 $$
-where $\mu$ and $\sigma$ are normalization parameters and $\epsilon$ is a small constant used for numerical stability. Parameters $\mu$ and $\sigma$ can be estimated directly from the input $\mu = \mathrm{E}[x]$ and $\sigma^2 = \mathrm{Var}[x]$, where average can be taken either over each sample independently or over the whole batch. Alternatively, global normalization parameters independent of the current input can be used. A common strategy is to estimate the parameters as a running average over multiple samples: $p_{new} = (1 - momentum) \times p_{old} + momentum \times p_{t}$. The update speed is determined by the $momentum$, set to $0.1$ by default. </p>
-<p>During training $BatchNorm$ uses statistics of the current batch and collects a running average. During inference it uses saved running average. Although running mean and variance are not learned in a sense that there's no gradient descent with respect to these parameters, they are estimated from the training data.</p>
+where <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\sigma\)</span> are normalization parameters and <span class="arithmatex">\(\epsilon\)</span> is a small constant used for numerical stability. Parameters <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\sigma\)</span> can be estimated directly from the input <span class="arithmatex">\(\mu = \mathrm{E}[x]\)</span> and <span class="arithmatex">\(\sigma^2 = \mathrm{Var}[x]\)</span>, where average can be taken either over each sample independently or over the whole batch. Alternatively, global normalization parameters independent of the current input can be used. A common strategy is to estimate the parameters as a running average over multiple samples: <span class="arithmatex">\(p_{new} = (1 - momentum) \times p_{old} + momentum \times p_{t}\)</span>. The update speed is determined by the <span class="arithmatex">\(momentum\)</span>, set to <span class="arithmatex">\(0.1\)</span> by default. </p>
+<p>During training <span class="arithmatex">\(BatchNorm\)</span> uses statistics of the current batch and collects a running average. During inference it uses saved running average. Although running mean and variance are not learned in a sense that there's no gradient descent with respect to these parameters, they are estimated from the training data.</p>
 <p>An important assumption here is that the <strong>feature statistics of training batches remain stable and correspond to dataset-wide statistics</strong>. Let's look at what happens when it's not the case.</p>
 <h2 id="real-mean-and-variance-of-features-vs-batch-statistics">Real mean and variance of features vs batch statistics</h2>
-<p>I trained a 3D U-Net to segment the electron microscopy volume introduced earlier. This model uses $BatchNorm$:</p>
+<p>I trained a 3D U-Net to segment the electron microscopy volume introduced earlier. This model uses <span class="arithmatex">\(BatchNorm\)</span>:</p>
 <pre><code class="language-python">from monai.utils import set_determinism
 from monai.data import DataLoader, PatchDataset
 from monai.transforms import RandSpatialCropSamplesd
@@ -929,7 +929,7 @@ train_loader = DataLoader(train_patch_dataset, batch_size=1)
 $$
 train/eval\ disparity = 1 - Dice(P_{train}, P_{eval}), 
 $$ 
-where $P_{train}$ is the prediction done with  <code>model.train()</code> and $P_{eval}$ - with <code>model.eval()</code>. If the predictions match perfectly, mismatch is 0 and if they are the exact opposites of each other, it's 1.</p>
+where <span class="arithmatex">\(P_{train}\)</span> is the prediction done with  <code>model.train()</code> and <span class="arithmatex">\(P_{eval}\)</span> - with <code>model.eval()</code>. If the predictions match perfectly, mismatch is 0 and if they are the exact opposites of each other, it's 1.</p>
 <p>For our example dataset, train/eval mismatch for the boundary channel is 0.48, which is actually surprisingly strong difference. At this point the loss calculated during training is basically not representative of the real model performance all due to batch statistics instability. </p>
 <h2 id="practical-tips">Practical tips</h2>
 <h3 id="how-to-check-if-statistics-instability-ruins-my-networks-performance">How to check if statistics instability ruins my network's performance?</h3>
@@ -1021,6 +1021,10 @@ where $P_{train}$ is the prediction done with  <code>model.train()</code> and $P
     
     
       <script src="../assets/javascripts/bundle.5cf534bf.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>
