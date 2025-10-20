@@ -1,0 +1,1336 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../train-eval-disparity/">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.2">
+    
+    
+      
+        <title>How to get rid of tiling artifacts - Pretty picture analysis</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.f56500e0.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#how-to-get-rid-of-tiling-artifacts" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Pretty picture analysis" class="md-header__button md-logo" aria-label="Pretty picture analysis" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pretty picture analysis
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              How to get rid of tiling artifacts
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Pretty picture analysis" class="md-nav__button md-logo" aria-label="Pretty picture analysis" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Pretty picture analysis
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Alyona's personal blog
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          How to get rid of tiling artifacts
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        How to get rid of tiling artifacts
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tiling-artifacts-and-trade-offs-of-feature-normalization-in-the-segmentation-of-large-biological-images-at-iccv-2025" class="md-nav__link">
+    Tiling artifacts and trade-offs of feature normalization in the segmentation of large biological images at ICCV 2025
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#i-can-see-tile-borders-in-my-stitched-predictions-_" class="md-nav__link">
+    I can see tile borders in my stitched predictions ("¬_¬)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#causes-of-tiling-artifacts" class="md-nav__link">
+    Causes of tiling artifacts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instancenorm-refresher" class="md-nav__link">
+    InstanceNorm refresher
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#variability-inside-the-dataset" class="md-nav__link">
+    Variability inside the dataset
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-normalization-depends-on-tile-content" class="md-nav__link">
+    Feature normalization depends on tile content
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prediction-quality-depends-on-tile-size" class="md-nav__link">
+    Prediction quality depends on tile size
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-feature-normalization-eliminates-tiling-artifacts" class="md-nav__link">
+    Global feature normalization eliminates tiling artifacts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#receptive-field-and-halo" class="md-nav__link">
+    Receptive field and halo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transformers-inherently-cause-tiling-artifacts" class="md-nav__link">
+    Transformers inherently cause tiling artifacts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tile-mismatch-metric" class="md-nav__link">
+    Tile mismatch metric
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practical-tips" class="md-nav__link">
+    Practical tips
+  </a>
+  
+    <nav class="md-nav" aria-label="Practical tips">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-to-detect-tiling-artifacts" class="md-nav__link">
+    How to detect tiling artifacts?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-eliminate-tiling-artifacts" class="md-nav__link">
+    How to eliminate tiling artifacts?
+  </a>
+  
+    <nav class="md-nav" aria-label="How to eliminate tiling artifacts?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#preprocessing" class="md-nav__link">
+    Preprocessing
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#feature-normalization-inside-the-network" class="md-nav__link">
+    Feature normalization inside the network
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tile-overlap" class="md-nav__link">
+    Tile overlap
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#postprocessing" class="md-nav__link">
+    Postprocessing
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consider-the-whole-pipeline" class="md-nav__link">
+    Consider the whole pipeline
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-minimize-tiling-artifacts" class="md-nav__link">
+    How to minimize tiling artifacts?
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-use-instancenorm-at-all" class="md-nav__link">
+    Why use InstanceNorm at all?
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../train-eval-disparity/" class="md-nav__link">
+        Is `BatchNorm` a good choice for my problem?
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tiling-artifacts-and-trade-offs-of-feature-normalization-in-the-segmentation-of-large-biological-images-at-iccv-2025" class="md-nav__link">
+    Tiling artifacts and trade-offs of feature normalization in the segmentation of large biological images at ICCV 2025
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#i-can-see-tile-borders-in-my-stitched-predictions-_" class="md-nav__link">
+    I can see tile borders in my stitched predictions ("¬_¬)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#causes-of-tiling-artifacts" class="md-nav__link">
+    Causes of tiling artifacts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instancenorm-refresher" class="md-nav__link">
+    InstanceNorm refresher
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#variability-inside-the-dataset" class="md-nav__link">
+    Variability inside the dataset
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-normalization-depends-on-tile-content" class="md-nav__link">
+    Feature normalization depends on tile content
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prediction-quality-depends-on-tile-size" class="md-nav__link">
+    Prediction quality depends on tile size
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-feature-normalization-eliminates-tiling-artifacts" class="md-nav__link">
+    Global feature normalization eliminates tiling artifacts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#receptive-field-and-halo" class="md-nav__link">
+    Receptive field and halo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transformers-inherently-cause-tiling-artifacts" class="md-nav__link">
+    Transformers inherently cause tiling artifacts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tile-mismatch-metric" class="md-nav__link">
+    Tile mismatch metric
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practical-tips" class="md-nav__link">
+    Practical tips
+  </a>
+  
+    <nav class="md-nav" aria-label="Practical tips">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-to-detect-tiling-artifacts" class="md-nav__link">
+    How to detect tiling artifacts?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-eliminate-tiling-artifacts" class="md-nav__link">
+    How to eliminate tiling artifacts?
+  </a>
+  
+    <nav class="md-nav" aria-label="How to eliminate tiling artifacts?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#preprocessing" class="md-nav__link">
+    Preprocessing
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#feature-normalization-inside-the-network" class="md-nav__link">
+    Feature normalization inside the network
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tile-overlap" class="md-nav__link">
+    Tile overlap
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#postprocessing" class="md-nav__link">
+    Postprocessing
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consider-the-whole-pipeline" class="md-nav__link">
+    Consider the whole pipeline
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-minimize-tiling-artifacts" class="md-nav__link">
+    How to minimize tiling artifacts?
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-use-instancenorm-at-all" class="md-nav__link">
+    Why use InstanceNorm at all?
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="how-to-get-rid-of-tiling-artifacts">How to get rid of tiling artifacts</h1>
+<p>Follow-up tutorial for </p>
+<h3 id="tiling-artifacts-and-trade-offs-of-feature-normalization-in-the-segmentation-of-large-biological-images-at-iccv-2025"><a href="https://arxiv.org/abs/2503.19545">Tiling artifacts and trade-offs of feature normalization in the segmentation of large biological images</a> at ICCV 2025</h3>
+<h2 id="i-can-see-tile-borders-in-my-stitched-predictions-_">I can see tile borders in my stitched predictions ("¬_¬)</h2>
+<p>Biological images, especially in the case of volumetric imaging, are large. Electron microscopy volumes for connectomics or light sheet microscopy volumes can reach the scale of multiple terabytes. It is routine to work with 10-100 GB images of <span class="arithmatex">\(∼1000^3\)</span> pixels, which exceed GPU memory.</p>
+<p>During training random patches are sampled from the annotated images and combined into a batch. During inference/evaluation, the image is split into a grid of tiles which are processed by the network independently and then stitched back to form the full prediction. Here I refer both to 2D and 3D image patches as tiles. In this setup the size of the tiles is limited from above by GPU memory and from below by the receptive field of the network. Typical tile size is around 96x96x96 - 256x256x256 pixels.</p>
+<p><img src="images/training_pipeline.png" alt="Sliding window inference" align=center style="width: 400px;"/></p>
+<p>Tiling and stitching seem like purely technical steps, however, they can cause artifacts if predictions in neighboring tiles don't match exactly on the border. Sliding window inference is based on the idea that the predictions remain the same no matter how the tiling was made. If there is an overlap between two tiles, then in the overlapping area predictions for the same pixels should <strong>match exactly</strong>. In this case stitcing would be seamless and produce the final prediction as if we had a GPU with infinite memory.</p>
+<p>Unfortunately, it's not how it goes in many pipelines. The strength of tiling artifacts varies a lot depending on the specific network and dataset. It can go from barely noticeable to severely detrimental. Unfortunately, even if the artifacts are barely visible, in my experience post-processing algorithms are often very good at noticing these slight but very regular variations. For example, watershed and graph cut-based algorithms tend to make fun square-shaped instances even if the tile border is barely visible. Registration algorithms love to register stitching lines instead of focusing on the real content of the segmentation. Lastly, artifacts often become more pronounced when the network is reused for the data it was not originally trained on. All of this makes putting some effort into achieving seamless stitching well worth it. </p>
+<h2 id="causes-of-tiling-artifacts">Causes of tiling artifacts</h2>
+<p>There are 4 main causes of tiling artifacts:</p>
+<p>1) Tile-wise normalization in pre-processing
+2) Edge effects in the network predictions
+3) Tile-wise feature normalization inside the network
+4) Tile-wise normalization in post-processing</p>
+<p>Mostly when I bring up tiling artifacts, people who have experience with sliding window inference say that it's all edge effects and I just need to make overlap between tiles larger, so in this tutorial I will cover edge effects as the most widely known and easily solvable reason. </p>
+<p>However, it turns out that feature normalization inside the network causes much worse artifacts which can not be compensated for with simple postprocessing. These artifacts affect the whole tile, not just the edges, and strongly depend on the underlying data, making it hard to trace the source of the issue and debug it. In this tutorial I will mostly focus on the feature normalization.</p>
+<p>Finally, I will briefly comment on (1) and (4) - these parts are very diverse and specific to each pipeline, although there are some general rules to follow to achieve seamless final prediction.</p>
+<h2 id="instancenorm-refresher"><code>InstanceNorm</code> refresher</h2>
+<p>Neural networks consist of a series of filters with normalization and nonlinearity layers in between. Feature normalization helps to make convergence faster and more stable with respect to training parameters. In most cases it's probably possible to train a network with no normalization layers at all - however, the search for optimal learning rate schedule and other parameters might require much more effort.</p>
+<p>The general formula for the normalization operation with input <span class="arithmatex">\(x\)</span>, output <span class="arithmatex">\(y\)</span> is:</p>
+<p>$$
+y = \frac{x-\mu}{\sqrt{\sigma^2 + \epsilon}},
+$$
+where <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\sigma\)</span> are normalization parameters and <span class="arithmatex">\(\epsilon\)</span> is a small constant used for numerical stability. Parameters <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\sigma\)</span> can be estimated directly from the input <span class="arithmatex">\(\mu = \mathrm{E}[x]\)</span> and <span class="arithmatex">\(\sigma^2 = \mathrm{Var}[x]\)</span>, where average can be taken either over each sample independently or over the whole batch. Alternatively, global normalization parameters independent of the current input can be used. A common strategy is to estimate the parameters as a running average over multiple batches: <span class="arithmatex">\(p_{new} = (1 - momentum) \times p_{old} + momentum \times p_{t}\)</span>. The update speed is determined by the <span class="arithmatex">\(momentum\)</span>, set to <span class="arithmatex">\(0.1\)</span> by default. </p>
+<p>Both during training and during inference <span class="arithmatex">\(InstanceNorm\)</span> uses statistics of each tile. This means that essentially <strong>each tile's predictions are calculated with different feature normalization parameters</strong>, making seamless stitching impossible. While it's true maths-wise, maybe it's not such a big problem because the statistics of all tiles are roughly the same? Let's look at some data.</p>
+<h2 id="variability-inside-the-dataset">Variability inside the dataset</h2>
+<p>Here I load and visualize an example dataset.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">bio_monai.data</span> <span class="kn">import</span> <span class="n">load_data_config</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">no_tiling.data</span> <span class="kn">import</span> <span class="n">config_to_dataset</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span> <span class="nn">yaml</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">colors</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="k">as</span> <span class="nn">mpatches</span>
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">cd</span> <span class="o">..</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>/g/kreshuk/buglakova/projects/no_tiling_artifacts
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">config_path</span> <span class="o">=</span> <span class="s2">&quot;experiments/em_organoids/setup_01.yaml&quot;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">data_config_path</span> <span class="o">=</span> <span class="s2">&quot;experiments/em_organoids/data_config_organoids_full.json&quot;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">yamlfile</span><span class="p">:</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">yamlfile</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">data_config</span> <span class="o">=</span> <span class="n">load_data_config</span><span class="p">(</span><span class="n">data_config_path</span><span class="p">)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">cols</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fg&quot;</span><span class="p">:</span> <span class="s2">&quot;#66c2a5&quot;</span><span class="p">,</span> <span class="s2">&quot;bg&quot;</span><span class="p">:</span> <span class="s2">&quot;#8da0cb&quot;</span><span class="p">,</span> <span class="s2">&quot;boundaries&quot;</span><span class="p">:</span> <span class="s2">&quot;#fc8d62&quot;</span><span class="p">,</span> <span class="s2">&quot;extra&quot;</span><span class="p">:</span> <span class="s2">&quot;#e78ac3&quot;</span><span class="p">}</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">channels</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fg&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;bg&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;boundaries&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;extra&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">full_names</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fg&quot;</span><span class="p">:</span> <span class="s2">&quot;foreground&quot;</span><span class="p">,</span> <span class="s2">&quot;bg&quot;</span><span class="p">:</span> <span class="s2">&quot;background&quot;</span><span class="p">,</span> <span class="s2">&quot;boundaries&quot;</span><span class="p">:</span> <span class="s2">&quot;boundaries&quot;</span><span class="p">,</span> <span class="s2">&quot;extra&quot;</span><span class="p">:</span> <span class="s2">&quot;extracellular&quot;</span><span class="p">}</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Read data config
+Read successful
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">ds</span> <span class="o">=</span> <span class="n">config_to_dataset</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;dataset&quot;</span><span class="p">],</span> <span class="n">data_config</span><span class="p">[</span><span class="s2">&quot;full_data&quot;</span><span class="p">])</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Loading dataset:   0%|          | 0/1 [00:00&lt;?, ?it/s]Loading dataset: 100%|██████████| 1/1 [03:56&lt;00:00, 236.11s/it]
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;image&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">label</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">xy_slice_roi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">xz_slice_roi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[:,</span> <span class="mi">750</span><span class="p">,</span> <span class="p">:]</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">xy_slice_roi</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Greys_r&quot;</span><span class="p">)</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">xz_slice_roi</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Greys_r&quot;</span><span class="p">)</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="n">legend_patches</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">chan</span> <span class="ow">in</span> <span class="n">channels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>    <span class="n">cmap</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">]])</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">label</span><span class="p">[</span><span class="n">chan</span><span class="p">][</span><span class="n">xy_slice_roi</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="p">(</span><span class="n">label</span><span class="p">[</span><span class="n">chan</span><span class="p">][</span><span class="n">xy_slice_roi</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>    <span class="n">legend_patches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">full_names</span><span class="p">[</span><span class="n">name</span><span class="p">]))</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="n">legend_patches</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;large&quot;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="n">legend_patches</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">chan</span> <span class="ow">in</span> <span class="n">channels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>    <span class="n">cmap</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">]])</span>
+</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">label</span><span class="p">[</span><span class="n">chan</span><span class="p">][</span><span class="n">xz_slice_roi</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="p">(</span><span class="n">label</span><span class="p">[</span><span class="n">chan</span><span class="p">][</span><span class="n">xz_slice_roi</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>
+</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>    <span class="n">legend_patches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">full_names</span><span class="p">[</span><span class="n">name</span><span class="p">]))</span>
+</span><span id="__span-5-30"><a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>
+</span><span id="__span-5-31"><a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>
+</span><span id="__span-5-32"><a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="n">legend_patches</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;large&quot;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</span><span id="__span-5-33"><a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+</span><span id="__span-5-34"><a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+</span><span id="__span-5-35"><a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>
+</span><span id="__span-5-36"><a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>
+</span><span id="__span-5-37"><a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>&lt;Figure size 2000x2000 with 0 Axes&gt;
+</code></pre></div>
+<p><img alt="png" src="../tiling_artifacts_tutorial_files/tiling_artifacts_tutorial_18_1.png" /></p>
+<p>This is a FIB-SEM volume of a tissue and the task was to segment individual cells out. For that we need a network to perform semantic segmentation of 4 classes:</p>
+<ul>
+<li>Foreground: areas inside the cells</li>
+<li>Background: black area where there is no electron microscopy signal</li>
+<li>Boundaries: interfaces between cells</li>
+<li>Extracellular matrix: free space between cells</li>
+</ul>
+<p>Why this dataset? It's not really a benchmark dataset and it's legit to ask why do we care about segmenting cell boundaries in some weird organoids. In my opinion it neatly demonstrates the difficulties bioimage analysts face in every project:</p>
+<ul>
+<li>The volume is large (<span class="arithmatex">\(1349 \times 1505 \times 1646\)</span> pixels) but not crazy large (fully fits into RAM on a decent machine but definitely not into GPU memory)</li>
+<li>The imaging method (FIB-SEM) is well-established but the sample preparation for this particular sample was quite special, so the visual appearance is unique</li>
+<li>Even if we imagine taking a model for cell boundaries trained on some other electron microscopy data (I'm not aware of the existance of any dataset that is even somewhat similar), it doesn't solve the problem of segmenting extracellular matrix</li>
+<li>Seems like <code>image == 0</code> should solve segmenting background class, but there are the lipid droplets which also have 0 signal. In principle we could apply an heuristic for segmenting background, like taking the largest connected component, but it is not transferable to other datasets (not shown here). One of the downstream tasks is counting lipid droplets per cell, so ignoring them is not an option as well  </li>
+<li>Cell boundaries can be super thin - down to 1 pixel wide - or very thick in different parts of the dataset, so it's not possible to downsample it further</li>
+<li>The dataset is quite unbalanced but the classes are distributed throughout the volume so it's not possible to pick just one foreground area manually or with any reasonable heuristic</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">chan</span> <span class="ow">in</span> <span class="n">channels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">chan</span><span class="p">,</span> <span class="n">label</span><span class="p">[</span><span class="n">chan</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">label</span><span class="p">[</span><span class="n">chan</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">tick_label</span><span class="o">=</span><span class="n">full_names</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">label</span><span class="p">[</span><span class="n">chan</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">label</span><span class="p">[</span><span class="n">chan</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">names</span> <span class="o">=</span> <span class="n">channels</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="n">channels</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">],</span> <span class="p">[</span><span class="n">full_names</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]);</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Proportion of the class is full dataset&quot;</span><span class="p">);</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>fg: 0.56
+bg: 0.30
+boundaries: 0.09
+extra: 0.05
+</code></pre></div>
+<p><img alt="png" src="../tiling_artifacts_tutorial_files/tiling_artifacts_tutorial_20_1.png" /></p>
+<p>As we can see, boundaries class takes up <span class="arithmatex">\(9\)</span> % of the volume. Let's use <code>GridPatchDataset</code> to split the volume into a grid of non-overlapping tiles of size <span class="arithmatex">\(128 \times 128 \times 128\)</span> and check the distribution of the boundaries class. <span class="arithmatex">\(128 \times 128 \times 128\)</span> is a typical tile size for doing sliding window predictions with a relatively small network.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">monai.data</span> <span class="kn">import</span> <span class="n">GridPatchDataset</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">PatchIterd</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">patch_iter</span> <span class="o">=</span> <span class="n">PatchIterd</span><span class="p">(</span><span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">],</span> <span class="n">patch_size</span><span class="o">=</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">start_pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">grid_dataset</span> <span class="o">=</span> <span class="n">GridPatchDataset</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span> <span class="n">patch_iter</span><span class="o">=</span><span class="n">patch_iter</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">class_distribution</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fg&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;boundaries&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;extra&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;bg&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">grid_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">)):</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="n">img</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="n">lbl</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    <span class="n">class_distribution</span><span class="p">[</span><span class="s2">&quot;fg&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lbl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">lbl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>    <span class="n">class_distribution</span><span class="p">[</span><span class="s2">&quot;boundaries&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lbl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">lbl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>    <span class="n">class_distribution</span><span class="p">[</span><span class="s2">&quot;extra&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lbl</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">lbl</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>    <span class="n">class_distribution</span><span class="p">[</span><span class="s2">&quot;bg&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lbl</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">lbl</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>1716it [01:09, 24.55it/s]
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">class_distribution</span><span class="p">[</span><span class="s2">&quot;boundaries&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">cols</span><span class="p">[</span><span class="s2">&quot;boundaries&quot;</span><span class="p">])</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Number of samples&quot;</span><span class="p">)</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Proportion of boundary class in tiles&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Text(0.5, 0, &#39;Proportion of boundary class in tiles&#39;)
+</code></pre></div>
+<p><img alt="png" src="../tiling_artifacts_tutorial_files/tiling_artifacts_tutorial_23_1.png" /></p>
+<p>Most of the samples have no boundary class and the rest of the samples are mostly far from the dataset-wide <span class="arithmatex">\(9\)</span>%. This means that tiles have rather different content, potentially making mean and variance used in normalization layers also very different. How large do tiles need to be roughly stable at least in terms of the class proportions?</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">patch_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">96</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">512</span><span class="p">]</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">boundary_proportions</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="k">for</span> <span class="n">patch_size</span> <span class="ow">in</span> <span class="n">patch_sizes</span><span class="p">:</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">patch_iter</span> <span class="o">=</span> <span class="n">PatchIterd</span><span class="p">(</span><span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">],</span> <span class="n">patch_size</span><span class="o">=</span><span class="p">(</span><span class="n">patch_size</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">),</span> <span class="n">start_pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">grid_dataset</span> <span class="o">=</span> <span class="n">GridPatchDataset</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span> <span class="n">patch_iter</span><span class="o">=</span><span class="n">patch_iter</span><span class="p">)</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    <span class="n">class_distribution</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fg&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;boundaries&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;extra&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;bg&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">grid_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">)):</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>        <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>        <span class="n">img</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>        <span class="n">lbl</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>        <span class="n">class_distribution</span><span class="p">[</span><span class="s2">&quot;fg&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lbl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">lbl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>        <span class="n">class_distribution</span><span class="p">[</span><span class="s2">&quot;boundaries&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lbl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">lbl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>        <span class="n">class_distribution</span><span class="p">[</span><span class="s2">&quot;extra&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lbl</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">lbl</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>        <span class="n">class_distribution</span><span class="p">[</span><span class="s2">&quot;bg&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lbl</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">lbl</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>
+</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>    <span class="n">boundary_proportions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">class_distribution</span><span class="p">[</span><span class="s2">&quot;boundaries&quot;</span><span class="p">]);</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>4320it [01:12, 59.94it/s] 
+1716it [01:08, 25.22it/s]
+576it [01:25,  6.71it/s]
+252it [01:40,  2.52it/s]
+36it [03:08,  5.24s/it]
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">long_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tile_size&quot;</span><span class="p">,</span> <span class="s2">&quot;prop&quot;</span><span class="p">])</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">for</span> <span class="n">patch_size</span><span class="p">,</span> <span class="n">prop</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">patch_sizes</span><span class="p">,</span> <span class="n">boundary_proportions</span><span class="p">):</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">df</span> <span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">prop</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;prop&quot;</span><span class="p">])</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;tile_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">patch_size</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="n">long_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">long_df</span><span class="p">,</span> <span class="n">df</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="n">long_df</span><span class="p">[</span><span class="s2">&quot;tile_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">long_df</span><span class="p">[</span><span class="s2">&quot;tile_size&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>/tmp/ipykernel_2986358/1492769951.py:8: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  long_df = pd.concat([long_df, df], ignore_index=True);
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">sns</span><span class="o">.</span><span class="n">stripplot</span><span class="p">(</span><span class="n">long_df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;tile_size&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;prop&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;tile_size&quot;</span><span class="p">,</span> <span class="n">jitter</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;husl&quot;</span><span class="p">)</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="mf">0.09</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">patch_sizes</span><span class="p">)</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Full dataset&quot;</span><span class="p">)</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;tile size&quot;</span><span class="p">)</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Proportion of boundaries class&quot;</span><span class="p">);</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+</span></code></pre></div>
+<p><img alt="png" src="../tiling_artifacts_tutorial_files/tiling_artifacts_tutorial_27_0.png" /></p>
+<p>As we can see, even with a very large tile size of <span class="arithmatex">\(512 \times 512 \times 512\)</span>, which, by the way, is unrealistic for the GPU RAM even with <code>batch_size=1</code>, the boundary class proportion significantly strays from the volume-wise <span class="arithmatex">\(9\)</span>%. This means that the tile-wise feature statistics will vary a lot from tile to tile. In the sliding window inference the tiling is often done with overlap to compensate for the incomplete convolutions on the tile borders. However, due to tile-wise normalization inside the network predictions <strong>for the exact same pixel</strong> in neighboring tiles can be completely different even in the central part of the tile where all convolutions are valid.</p>
+<h2 id="feature-normalization-depends-on-tile-content">Feature normalization depends on tile content</h2>
+<p>I trained a 3D U-Net to segment the electron microscopy volume introduced earlier. This model uses <span class="arithmatex">\(InstanceNorm\)</span>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span> <span class="nn">monai.utils</span> <span class="kn">import</span> <span class="n">set_determinism</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kn">from</span> <span class="nn">monai.data</span> <span class="kn">import</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">PatchDataset</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="kn">from</span> <span class="nn">monai.transforms</span> <span class="kn">import</span> <span class="n">RandSpatialCropSamplesd</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="kn">import</span> <span class="nn">torch</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="kn">from</span> <span class="nn">no_tiling.models</span> <span class="kn">import</span> <span class="n">load_model</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="kn">from</span> <span class="nn">torchvision.models.feature_extraction</span> <span class="kn">import</span> <span class="n">get_graph_node_names</span><span class="p">,</span> <span class="n">create_feature_extractor</span>
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">model_path</span> <span class="o">=</span> <span class="s2">&quot;data/experiments/organoids_boundaries/setup_03/model_epoch_0049.pth&quot;</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="c1"># Monai settings</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">set_determinism</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="c1"># Set device</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GPU is available&quot;</span><span class="p">)</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>    <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="k">else</span><span class="p">:</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GPU is not available&quot;</span><span class="p">)</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>    <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="c1"># Load model    </span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>GPU is available
+BasicUNet features: (32, 64, 128, 32).
+Scaling factors: [[2, 2, 2], [2, 2, 2]]
+UNet(
+  (conv_0): TwoConv(
+    (conv_0): Convolution(
+      (conv): Conv3d(1, 32, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+      (adn): ADN(
+        (N): InstanceNorm3d(32, eps=1e-05, momentum=0.01, affine=False, track_running_stats=False)
+        (D): Dropout3d(p=0.0, inplace=False)
+        (A): LeakyReLU(negative_slope=0.1, inplace=True)
+      )
+    )
+    (conv_1): Convolution(
+      (conv): Conv3d(32, 32, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+      (adn): ADN(
+        (N): InstanceNorm3d(32, eps=1e-05, momentum=0.01, affine=False, track_running_stats=False)
+        (D): Dropout3d(p=0.0, inplace=False)
+        (A): LeakyReLU(negative_slope=0.1, inplace=True)
+      )
+    )
+  )
+  (downs): ModuleList(
+    (0): Down(
+      (max_pooling): MaxPool3d(kernel_size=[2, 2, 2], stride=[2, 2, 2], padding=0, dilation=1, ceil_mode=False)
+      (convs): TwoConv(
+        (conv_0): Convolution(
+          (conv): Conv3d(32, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(64, eps=1e-05, momentum=0.01, affine=False, track_running_stats=False)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+        (conv_1): Convolution(
+          (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(64, eps=1e-05, momentum=0.01, affine=False, track_running_stats=False)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+      )
+    )
+    (1): Down(
+      (max_pooling): MaxPool3d(kernel_size=[2, 2, 2], stride=[2, 2, 2], padding=0, dilation=1, ceil_mode=False)
+      (convs): TwoConv(
+        (conv_0): Convolution(
+          (conv): Conv3d(64, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(128, eps=1e-05, momentum=0.01, affine=False, track_running_stats=False)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+        (conv_1): Convolution(
+          (conv): Conv3d(128, 128, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(128, eps=1e-05, momentum=0.01, affine=False, track_running_stats=False)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+      )
+    )
+  )
+  (upcats): ModuleList(
+    (0): UpCat(
+      (upsample): UpSample(
+        (deconv): ConvTranspose3d(128, 64, kernel_size=(2, 2, 2), stride=(2, 2, 2))
+      )
+      (convs): TwoConv(
+        (conv_0): Convolution(
+          (conv): Conv3d(128, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(64, eps=1e-05, momentum=0.01, affine=False, track_running_stats=False)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+        (conv_1): Convolution(
+          (conv): Conv3d(64, 64, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(64, eps=1e-05, momentum=0.01, affine=False, track_running_stats=False)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+      )
+    )
+    (1): UpCat(
+      (upsample): UpSample(
+        (deconv): ConvTranspose3d(64, 64, kernel_size=(2, 2, 2), stride=(2, 2, 2))
+      )
+      (convs): TwoConv(
+        (conv_0): Convolution(
+          (conv): Conv3d(96, 32, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(32, eps=1e-05, momentum=0.01, affine=False, track_running_stats=False)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+        (conv_1): Convolution(
+          (conv): Conv3d(32, 32, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+          (adn): ADN(
+            (N): InstanceNorm3d(32, eps=1e-05, momentum=0.01, affine=False, track_running_stats=False)
+            (D): Dropout3d(p=0.0, inplace=False)
+            (A): LeakyReLU(negative_slope=0.1, inplace=True)
+          )
+        )
+      )
+    )
+  )
+  (final_conv): Conv3d(32, 4, kernel_size=(1, 1, 1), stride=(1, 1, 1))
+  (final_activation): Softmax(dim=1)
+)
+</code></pre></div>
+<p>We can directly check how tile content affects the features and predictions by sampling 4 overlapping tiles and examining the features and predictions at the exact same pixel.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">image</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">label</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">gc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">430</span><span class="p">,</span> <span class="mi">180</span><span class="p">]</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">z_sh</span> <span class="o">=</span> <span class="mi">32</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="n">full_tile_sh</span> <span class="o">=</span> <span class="mi">192</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">margin</span> <span class="o">=</span> <span class="mi">40</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="n">tile_sh</span> <span class="o">=</span> <span class="n">full_tile_sh</span> <span class="o">-</span> <span class="n">margin</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="n">tile_1</span> <span class="o">=</span> <span class="n">image</span><span class="p">[:,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">z_sh</span><span class="p">:</span><span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">z_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tile_sh</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">margin</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">tile_sh</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">margin</span><span class="p">]</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="n">tile_1_label</span> <span class="o">=</span> <span class="n">label</span><span class="p">[:,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">z_sh</span><span class="p">:</span><span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">z_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tile_sh</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">margin</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">tile_sh</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">margin</span><span class="p">]</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="n">tile_1_coord</span> <span class="o">=</span> <span class="p">[</span><span class="n">z_sh</span><span class="p">,</span> <span class="n">tile_sh</span><span class="p">,</span> <span class="n">tile_sh</span><span class="p">]</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="n">tile_2</span> <span class="o">=</span> <span class="n">image</span><span class="p">[:,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">z_sh</span><span class="p">:</span><span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">z_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tile_sh</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">margin</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">margin</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">tile_sh</span><span class="p">]</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="n">tile_2_label</span> <span class="o">=</span> <span class="n">label</span><span class="p">[:,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">z_sh</span><span class="p">:</span><span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">z_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tile_sh</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">margin</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">margin</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">tile_sh</span><span class="p">]</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="n">tile_2_coord</span> <span class="o">=</span> <span class="p">[</span><span class="n">z_sh</span><span class="p">,</span> <span class="n">tile_sh</span><span class="p">,</span> <span class="n">margin</span><span class="p">]</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="n">tile_3</span> <span class="o">=</span> <span class="n">image</span><span class="p">[:,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">z_sh</span><span class="p">:</span><span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">z_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">margin</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">tile_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">tile_sh</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">margin</span><span class="p">]</span>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="n">tile_3_label</span> <span class="o">=</span> <span class="n">label</span><span class="p">[:,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">z_sh</span><span class="p">:</span><span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">z_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">margin</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">tile_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">tile_sh</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">margin</span><span class="p">]</span>
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="n">tile_3_coord</span> <span class="o">=</span> <span class="p">[</span><span class="n">z_sh</span><span class="p">,</span> <span class="n">margin</span><span class="p">,</span> <span class="n">tile_sh</span><span class="p">]</span>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a>
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="n">tile_4</span> <span class="o">=</span> <span class="n">image</span><span class="p">[:,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">z_sh</span><span class="p">:</span><span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">z_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">margin</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">tile_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">margin</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">tile_sh</span><span class="p">]</span>
+</span><span id="__span-15-20"><a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a><span class="n">tile_4_label</span> <span class="o">=</span> <span class="n">label</span><span class="p">[:,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">z_sh</span><span class="p">:</span><span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">z_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">margin</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">tile_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">margin</span><span class="p">:</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">tile_sh</span><span class="p">]</span>
+</span><span id="__span-15-21"><a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a><span class="n">tile_4_coord</span> <span class="o">=</span> <span class="p">[</span><span class="n">z_sh</span><span class="p">,</span> <span class="n">margin</span><span class="p">,</span> <span class="n">margin</span><span class="p">]</span>
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Greys_r&quot;</span><span class="p">)</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">([</span><span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">tile_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">tile_sh</span><span class="p">],</span> <span class="n">ymin</span><span class="o">=</span><span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tile_sh</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">tile_sh</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;aquamarine&quot;</span><span class="p">)</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">([</span><span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tile_sh</span><span class="p">,</span> <span class="n">gc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">tile_sh</span><span class="p">],</span> <span class="n">xmin</span><span class="o">=</span><span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">tile_sh</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="n">gc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">tile_sh</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;aquamarine&quot;</span><span class="p">)</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">);</span>
+</span></code></pre></div>
+<p><img alt="png" src="../tiling_artifacts_tutorial_files/tiling_artifacts_tutorial_36_0.png" /></p>
+<p>Here red dot shows the pixel that we are going to examine. I'm going to split the area highlighted with a square into 4 overlapping tiles. In this case the neighboring tiles have quite different class distributions: upper left tile has more extracellular matrix and outside-of-image background while tile lower right tile is mostly inside one cell, with most of the pixels having foreground class:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">f</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>  <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="k">for</span> <span class="n">tile</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">coord</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">tile_1</span><span class="p">,</span> <span class="n">tile_2</span><span class="p">,</span> <span class="n">tile_3</span><span class="p">,</span> <span class="n">tile_4</span><span class="p">],</span> <span class="p">[</span><span class="n">tile_1_label</span><span class="p">,</span> <span class="n">tile_2_label</span><span class="p">,</span> <span class="n">tile_3_label</span><span class="p">,</span> <span class="n">tile_4_label</span><span class="p">],</span> <span class="p">[</span><span class="n">tile_1_coord</span><span class="p">,</span> <span class="n">tile_2_coord</span><span class="p">,</span> <span class="n">tile_3_coord</span><span class="p">,</span> <span class="n">tile_4_coord</span><span class="p">],</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)):</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tile</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">z_sh</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Greys_r&quot;</span><span class="p">)</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">([</span><span class="n">coord</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="p">[</span><span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tile </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2"> raw data&quot;</span><span class="p">)</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">();</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span>
+</span></code></pre></div>
+<p><img alt="png" src="../tiling_artifacts_tutorial_files/tiling_artifacts_tutorial_38_0.png" /></p>
+<div class="language-text highlight"><pre><span></span><code>&lt;Figure size 640x480 with 0 Axes&gt;
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">f</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>  <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="k">for</span> <span class="n">tile</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">coord</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">tile_1</span><span class="p">,</span> <span class="n">tile_2</span><span class="p">,</span> <span class="n">tile_3</span><span class="p">,</span> <span class="n">tile_4</span><span class="p">],</span> <span class="p">[</span><span class="n">tile_1_label</span><span class="p">,</span> <span class="n">tile_2_label</span><span class="p">,</span> <span class="n">tile_3_label</span><span class="p">,</span> <span class="n">tile_4_label</span><span class="p">],</span> <span class="p">[</span><span class="n">tile_1_coord</span><span class="p">,</span> <span class="n">tile_2_coord</span><span class="p">,</span> <span class="n">tile_3_coord</span><span class="p">,</span> <span class="n">tile_4_coord</span><span class="p">],</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)):</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>    <span class="c1"># ax.imshow(tile[0, z_sh], cmap=&quot;Greys_r&quot;)</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>    <span class="n">legend_patches</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">chan</span> <span class="ow">in</span> <span class="n">channels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>        <span class="n">cmap</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">]])</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>        <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">label</span><span class="p">[</span><span class="n">chan</span><span class="p">,</span> <span class="n">z_sh</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="p">(</span><span class="n">label</span><span class="p">[</span><span class="n">chan</span><span class="p">,</span> <span class="n">z_sh</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>        <span class="n">legend_patches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">full_names</span><span class="p">[</span><span class="n">name</span><span class="p">]))</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">([</span><span class="n">coord</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="p">[</span><span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tile </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2"> ground truth&quot;</span><span class="p">)</span>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="n">legend_patches</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;large&quot;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">();</span>
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span>
+</span></code></pre></div>
+<p><img alt="png" src="../tiling_artifacts_tutorial_files/tiling_artifacts_tutorial_39_0.png" /></p>
+<div class="language-text highlight"><pre><span></span><code>&lt;Figure size 640x480 with 0 Axes&gt;
+</code></pre></div>
+<p>The network starts with the convolution <code>conv_0</code> followed by a normalization layer and nonlinearity. I extracted the outputs of the very first convolution and the subsequent normalization layer for the pixel of interest. Since it is exactly the same pixel with the same immediate context, in principle it should also have the same or very similar features inside the network regardless of how the tiling was done, right?</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">from</span> <span class="nn">torchvision.models.feature_extraction</span> <span class="kn">import</span> <span class="n">get_graph_node_names</span><span class="p">,</span> <span class="n">create_feature_extractor</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">nodes</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_graph_node_names</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>[&#39;x&#39;, &#39;conv_0.conv_0.conv&#39;, &#39;conv_0.conv_0.adn.N&#39;, &#39;conv_0.conv_0.adn.D&#39;, &#39;conv_0.conv_0.adn.A&#39;, &#39;conv_0.conv_1.conv&#39;, &#39;conv_0.conv_1.adn.N&#39;, &#39;conv_0.conv_1.adn.D&#39;, &#39;conv_0.conv_1.adn.A&#39;, &#39;downs.0.max_pooling&#39;, &#39;downs.0.convs.conv_0.conv&#39;, &#39;downs.0.convs.conv_0.adn.N&#39;, &#39;downs.0.convs.conv_0.adn.D&#39;, &#39;downs.0.convs.conv_0.adn.A&#39;, &#39;downs.0.convs.conv_1.conv&#39;, &#39;downs.0.convs.conv_1.adn.N&#39;, &#39;downs.0.convs.conv_1.adn.D&#39;, &#39;downs.0.convs.conv_1.adn.A&#39;, &#39;downs.1.max_pooling&#39;, &#39;downs.1.convs.conv_0.conv&#39;, &#39;downs.1.convs.conv_0.adn.N&#39;, &#39;downs.1.convs.conv_0.adn.D&#39;, &#39;downs.1.convs.conv_0.adn.A&#39;, &#39;downs.1.convs.conv_1.conv&#39;, &#39;downs.1.convs.conv_1.adn.N&#39;, &#39;downs.1.convs.conv_1.adn.D&#39;, &#39;downs.1.convs.conv_1.adn.A&#39;, &#39;upcats.0.upsample.deconv&#39;, &#39;upcats.0.convs.conv_0.conv&#39;, &#39;upcats.0.convs.conv_0.adn.N&#39;, &#39;upcats.0.convs.conv_0.adn.D&#39;, &#39;upcats.0.convs.conv_0.adn.A&#39;, &#39;upcats.0.convs.conv_1.conv&#39;, &#39;upcats.0.convs.conv_1.adn.N&#39;, &#39;upcats.0.convs.conv_1.adn.D&#39;, &#39;upcats.0.convs.conv_1.adn.A&#39;, &#39;upcats.1.upsample.deconv&#39;, &#39;upcats.1.convs.conv_0.conv&#39;, &#39;upcats.1.convs.conv_0.adn.N&#39;, &#39;upcats.1.convs.conv_0.adn.D&#39;, &#39;upcats.1.convs.conv_0.adn.A&#39;, &#39;upcats.1.convs.conv_1.conv&#39;, &#39;upcats.1.convs.conv_1.adn.N&#39;, &#39;upcats.1.convs.conv_1.adn.D&#39;, &#39;upcats.1.convs.conv_1.adn.A&#39;, &#39;final_conv&#39;, &#39;final_activation&#39;]
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">feature_extractor</span> <span class="o">=</span> <span class="n">create_feature_extractor</span><span class="p">(</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">model</span><span class="p">,</span> <span class="n">return_nodes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;conv_0.conv_0.conv&#39;</span><span class="p">,</span> <span class="s1">&#39;conv_0.conv_0.adn.N&#39;</span><span class="p">])</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="n">conv_features</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="n">norm_features</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="n">prediction</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="n">f</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>  <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>
+</span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="k">for</span> <span class="n">tile</span><span class="p">,</span> <span class="n">coord</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">tile_1</span><span class="p">,</span> <span class="n">tile_2</span><span class="p">,</span> <span class="n">tile_3</span><span class="p">,</span> <span class="n">tile_4</span><span class="p">],</span> <span class="p">[</span><span class="n">tile_1_coord</span><span class="p">,</span> <span class="n">tile_2_coord</span><span class="p">,</span> <span class="n">tile_3_coord</span><span class="p">,</span> <span class="n">tile_4_coord</span><span class="p">],</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)):</span>
+</span><span id="__span-20-11"><a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>    <span class="n">out</span> <span class="o">=</span> <span class="n">feature_extractor</span><span class="p">(</span><span class="n">tile</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">))</span>
+</span><span id="__span-20-12"><a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a>    <span class="n">conv_feat</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;conv_0.conv_0.conv&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+</span><span id="__span-20-13"><a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a>    <span class="n">norm_feat</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;conv_0.conv_0.adn.N&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+</span><span id="__span-20-14"><a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a>
+</span><span id="__span-20-15"><a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">conv_feat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">conv_feat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+</span><span id="__span-20-16"><a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Convolution 0, tile </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-20-17"><a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a>
+</span><span id="__span-20-18"><a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a>
+</span><span id="__span-20-19"><a id="__codelineno-20-19" name="__codelineno-20-19" href="#__codelineno-20-19"></a>    <span class="n">conv_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conv_feat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+</span><span id="__span-20-20"><a id="__codelineno-20-20" name="__codelineno-20-20" href="#__codelineno-20-20"></a>    <span class="n">norm_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">norm_feat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+</span></code></pre></div>
+<p><img alt="png" src="../tiling_artifacts_tutorial_files/tiling_artifacts_tutorial_42_0.png" /></p>
+<p>As expected, the output of the first convolution layer is exactly the same for the target pixel, regardless of the tile.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">f</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>  <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="k">for</span> <span class="n">tile</span><span class="p">,</span> <span class="n">coord</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">tile_1</span><span class="p">,</span> <span class="n">tile_2</span><span class="p">,</span> <span class="n">tile_3</span><span class="p">,</span> <span class="n">tile_4</span><span class="p">],</span> <span class="p">[</span><span class="n">tile_1_coord</span><span class="p">,</span> <span class="n">tile_2_coord</span><span class="p">,</span> <span class="n">tile_3_coord</span><span class="p">,</span> <span class="n">tile_4_coord</span><span class="p">],</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)):</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>    <span class="n">norm_feat</span> <span class="o">=</span> <span class="n">norm_features</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>    <span class="n">conv_feat</span> <span class="o">=</span> <span class="n">conv_features</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">norm_feat</span><span class="p">)),</span> <span class="n">norm_feat</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;crimson&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Convolution + InstanceNorm&quot;</span><span class="p">)</span>
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">conv_feat</span><span class="p">)),</span> <span class="n">conv_feat</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Convolution&quot;</span><span class="p">)</span>
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Convolution + InstanceNorm, tile </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a>
+</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>&lt;matplotlib.legend.Legend at 0x7ffedeaf62d0&gt;
+</code></pre></div>
+<p><img alt="png" src="../tiling_artifacts_tutorial_files/tiling_artifacts_tutorial_44_1.png" /></p>
+<p>On this plot feature after the first convolution layer are shown in transparent blue and features after normalization - in red. After normalization the features for the same pixel become different, depending on which tile it belongs to. Distributions in tile 1 and tile 3 are more or less similar because the content of these tiles is more similar, however, even between them there's a significant difference. </p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">f</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>  <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="k">for</span> <span class="n">tile</span><span class="p">,</span> <span class="n">coord</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">tile_1</span><span class="p">,</span> <span class="n">tile_2</span><span class="p">,</span> <span class="n">tile_3</span><span class="p">,</span> <span class="n">tile_4</span><span class="p">],</span> <span class="p">[</span><span class="n">tile_1_coord</span><span class="p">,</span> <span class="n">tile_2_coord</span><span class="p">,</span> <span class="n">tile_3_coord</span><span class="p">,</span> <span class="n">tile_4_coord</span><span class="p">],</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)):</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>    <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">tile</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">))</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">z_sh</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Greys_r&quot;</span><span class="p">)</span>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">([</span><span class="n">coord</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="p">[</span><span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Class probabilities at target pixel in tile </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="n">z_sh</span><span class="p">,</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+</span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Prediction of boundaries class, tile </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Class probabilities at target pixel in tile 0
+[9.9999976e-01 6.6844350e-08 3.7892136e-08 6.6073149e-08]
+Class probabilities at target pixel in tile 1
+[9.9873453e-01 6.2038205e-05 1.8355773e-04 1.0198853e-03]
+Class probabilities at target pixel in tile 2
+[9.9901414e-01 3.3465363e-05 9.1410409e-05 8.6091616e-04]
+Class probabilities at target pixel in tile 3
+[9.9947053e-01 9.7691009e-05 1.9195935e-04 2.3982450e-04]
+</code></pre></div>
+<p><img alt="png" src="../tiling_artifacts_tutorial_files/tiling_artifacts_tutorial_46_1.png" /></p>
+<p>Difference in normalized features leads to the differences in final predictions. In this particular case the difference was not big enough to flip the most probable class for this pixel, but still the predictions do not match exactly anymore. 0.01 might be imperceptible for a person but I promise that watershed will pick up on it in the most annoying way! Besides, if we compare other areas, we can see that some pixels which are confidently predicted as boundary in one tile can change completely to a different class in another tile.</p>
+<h2 id="prediction-quality-depends-on-tile-size">Prediction quality depends on tile size</h2>
+<p>The size of tiles defines how stable the normalization statistics are and therefore how well the predictions match between tiles. Running prediction with different tile sizes highlights the problem and gives another confirmation that the visible tiles are not an artifact of data acquisition. 
+I run predictions with the following tile sizes: <br />
+<span class="arithmatex">\(96 \times 96 \times 96\)</span><br />
+<span class="arithmatex">\(96 \times 128 \times 128\)</span><br />
+<span class="arithmatex">\(96 \times 256 \times 256\)</span> </p>
+<p>Note that there's an overlap of <span class="arithmatex">\(32\)</span> pixels between tiles in each direction and then the predictions in the <span class="arithmatex">\(32\)</span> pixels halo are multiplied by <span class="arithmatex">\(0\)</span>. This way only valid areas of each tile are used in the stitched prediction. For example, for <span class="arithmatex">\(96 \times 96 \times 96\)</span> tile only the central area of <span class="arithmatex">\(32 \times 32 \times 32\)</span> is used in the final stitched volume. In this setup there's no averaging between predictions from neighbouring tiles.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="kn">from</span> <span class="nn">monai.inferers</span> <span class="kn">import</span> <span class="n">sliding_window_inference</span>
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="n">image</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="n">z_pos</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="n">inference_slice</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="n">z_pos</span> <span class="o">-</span> <span class="mi">48</span><span class="p">:</span><span class="n">z_pos</span> <span class="o">+</span> <span class="mi">48</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="n">tile_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">96</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">256</span><span class="p">]</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="n">tile_size_predictions</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="k">for</span> <span class="n">tile_size</span> <span class="ow">in</span> <span class="n">tile_sizes</span><span class="p">:</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>    <span class="n">roi_size</span><span class="o">=</span><span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="n">tile_size</span><span class="p">,</span> <span class="n">tile_size</span><span class="p">)</span>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Predict using tile shape </span><span class="si">{</span><span class="n">roi_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a>    <span class="n">halo</span><span class="o">=</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>    <span class="n">sw_batch_size</span><span class="o">=</span><span class="mi">1</span>
+</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a>    <span class="n">roi_weight_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">roi_size</span><span class="p">)</span>
+</span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a>    <span class="n">roi_weight_map</span><span class="p">[</span><span class="n">halo</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="o">-</span><span class="n">halo</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">halo</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="o">-</span><span class="n">halo</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">halo</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span><span class="o">-</span><span class="n">halo</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a>    <span class="n">overlap</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="o">*</span><span class="n">halo</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="o">*</span><span class="n">roi_size</span><span class="p">)</span>
+</span><span id="__span-25-12"><a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Overlap: &quot;</span><span class="p">,</span> <span class="n">overlap</span><span class="p">)</span>
+</span><span id="__span-25-13"><a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a>    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+</span><span id="__span-25-14"><a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a>        <span class="n">prediction</span> <span class="o">=</span> <span class="n">sliding_window_inference</span><span class="p">(</span><span class="n">inference_slice</span><span class="p">,</span> <span class="n">roi_size</span><span class="p">,</span> <span class="n">sw_batch_size</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sw_device</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">roi_weight_map</span><span class="o">=</span><span class="n">roi_weight_map</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="n">overlap</span><span class="p">)</span>
+</span><span id="__span-25-15"><a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a>        <span class="n">prediction</span> <span class="o">=</span> <span class="n">prediction</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+</span><span id="__span-25-16"><a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a>    <span class="n">tile_size_predictions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Predict using tile shape (96, 96, 96)
+Overlap:  0.6666666666666666
+
+
+  1%|          | 13/2300 [00:01&lt;02:13, 17.16it/s]100%|██████████| 2300/2300 [01:45&lt;00:00, 21.76it/s]
+
+
+Predict using tile shape (96, 128, 128)
+Overlap:  0.5
+
+
+100%|██████████| 575/575 [00:45&lt;00:00, 12.70it/s]
+
+
+Predict using tile shape (96, 256, 256)
+Overlap:  0.25
+
+
+100%|██████████| 72/72 [00:20&lt;00:00,  3.59it/s]
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="n">prediction</span> <span class="o">=</span> <span class="n">prediction</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="n">f</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>  <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="k">for</span> <span class="n">tile_size</span><span class="p">,</span> <span class="n">prediction</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tile_sizes</span><span class="p">,</span> <span class="n">tile_size_predictions</span><span class="p">,</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">):</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">48</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Greys_r&quot;</span><span class="p">)</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cell boundary prediction, tile size </span><span class="si">{</span><span class="n">tile_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="n">f</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>  <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="k">for</span> <span class="n">tile_size</span><span class="p">,</span> <span class="n">prediction</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tile_sizes</span><span class="p">,</span> <span class="n">tile_size_predictions</span><span class="p">,</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">):</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">48</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Greys_r&quot;</span><span class="p">)</span>
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+</span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Foreground prediction, tile size </span><span class="si">{</span><span class="n">tile_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-27-15"><a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="__span-27-16"><a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a>
+</span><span id="__span-27-17"><a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a><span class="n">f</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>  <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+</span><span id="__span-27-18"><a id="__codelineno-27-18" name="__codelineno-27-18" href="#__codelineno-27-18"></a><span class="k">for</span> <span class="n">tile_size</span><span class="p">,</span> <span class="n">prediction</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tile_sizes</span><span class="p">,</span> <span class="n">tile_size_predictions</span><span class="p">,</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">):</span>
+</span><span id="__span-27-19"><a id="__codelineno-27-19" name="__codelineno-27-19" href="#__codelineno-27-19"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">48</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Greys_r&quot;</span><span class="p">)</span>
+</span><span id="__span-27-20"><a id="__codelineno-27-20" name="__codelineno-27-20" href="#__codelineno-27-20"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+</span><span id="__span-27-21"><a id="__codelineno-27-21" name="__codelineno-27-21" href="#__codelineno-27-21"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+</span><span id="__span-27-22"><a id="__codelineno-27-22" name="__codelineno-27-22" href="#__codelineno-27-22"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Extracellular matrix prediction, tile size </span><span class="si">{</span><span class="n">tile_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-27-23"><a id="__codelineno-27-23" name="__codelineno-27-23" href="#__codelineno-27-23"></a><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></div>
+<p><img alt="png" src="../tiling_artifacts_tutorial_files/tiling_artifacts_tutorial_54_0.png" /></p>
+<p><img alt="png" src="../tiling_artifacts_tutorial_files/tiling_artifacts_tutorial_54_1.png" /></p>
+<p><img alt="png" src="../tiling_artifacts_tutorial_files/tiling_artifacts_tutorial_54_2.png" /></p>
+<p>Inspecting the predictions, we can note a few things:</p>
+<ul>
+<li>
+<p><strong>The performance very obviously depends on the tile size.</strong> Also there are clear squares, size of which corresponds to the chosen tile size minus halo. This is kind of embarrassing? At the time of writing, it's end of 2025, GenAI is putting artists, creative writers and python developers out of jobs, technological singularity is quickly approaching, etc etc, and yet, what's this?? I feel kind of insecure posting these ugly predictions on the internet. Maybe I should just smooth out the tile edges somehow before presenting this and pretend it's fine... Oh wait, too late...</p>
+</li>
+<li>
+<p>Mismatch is not limited to the edges of the tiles. In fact, the edges (32 pixels wide) were removed before stitching. Tiling artifacts affect the entire tile.</p>
+</li>
+<li>
+<p>It's not a slight difference. Looking closely at the extracellular matrix predictions, especially at the larger tile size, we can notice that this class is predicted correctly in the tiles which contain both foreground and extracellular matrix, but then if the tile entirely consists only of extracellular matrix, it is suddenly wrongly predicted as foreground. The same can be seen in the middle of the cells: if a tile fits completely inside the cell and there are no cell boundaries for the context, normalization becomes wrong.</p>
+</li>
+</ul>
+<h2 id="global-feature-normalization-eliminates-tiling-artifacts">Global feature normalization eliminates tiling artifacts</h2>
+<p>The problems with stitching are caused by the feature normalization inside the network, so, to get rid of the tiling artifacts, a normalization that uses the same parameters for all the tiles should be used. <span class="arithmatex">\(BatchNorm\)</span>, another popular normalization layer, is doing just that. During training <span class="arithmatex">\(BatchNorm\)</span> uses statistics of the current batch and collects a running average. During inference it uses saved running average. Although running mean and variance are not learned in a sense that there's no gradient descent with respect to these parameters, they are estimated from the training data. With the normalization parameters fixed, the predictions can match exactly.</p>
+<p>Running predictions with different tile size shows that for <span class="arithmatex">\(InstanceNorm\)</span> the prediction quality depends on the tile size. Once the tile size is large enough that most tiles become more or less representative of the full dataset, the prediction quality reaches plato. For a network with global feature normalization the prediction quality remains the same regardless of the tile size.</p>
+<p><img src="images/dice_vs_tilesize.png" alt="Sliding window inference" align=center style="width: 400px;"/></p>
+<h2 id="receptive-field-and-halo">Receptive field and halo</h2>
+<p>Neural networks used for segmentation take images as input and produce images, usually of the same size, as output. The value assigned by the network to each pixel of the output is a deterministic function of a certain set of pixels in the input. This area of the input that affects one pixel in the output is called receptive field. There are many papers and tutorials describing how to calculate its size theoretically, based on the convolution filter sizes and strides. I have to admit that I never managed to apply these formulas correctly, somehow there's always an extra convolution layer or something... </p>
+<p>Fortunately, we can just use backpropagation to calculate theoretical and real receptive field. For that we run predictions with the network as usual and then calculate the gradient of the prediction in the central pixel <strong>with respect to the input image</strong> (not the network parameters like we do during training). The area of input where the gradients are not <code>None</code> is the theoretical receptive field and the area where the gradients are large is the effective receptive field. The gradient measurement from just one tile can be noisy so the gradients are calculated for all the tiles in the dataset and then averaged.</p>
+<p>Let's compare the receptive field for to networks with the same architecture, except one has <code>BatchNorm</code> (global feature normalization) and the other - <code>InstanceNorm</code> (tile-wise feature normalization).</p>
+<p><img src="images/receptive_field_comparison.png" alt="Receptive field comparison" align=center style="width: 800px;"/></p>
+<p>U-Net with global feature normalization has the receptive field that I would expect upon reading about receptive fields of CNNs in general. There is a limited area around the target pixel - in this case, a square with a side of 44 pixels - which takes part in the calculation of the final prediction in the central pixel of the output. Within this area the gradients have roughly gaussian distribution, with the relative contribution of pixels to the prediction falling for pixels which are further away from the center of the image. For this network only the content of the receptive field matters, making it possible to seamlessly stitch predictions as long as the 22 pixels on the edge of each tile are removed due to incomplete context.</p>
+<p>U-Net with tile-wise feature normalization has the same effective receptive field, determined by the number of layers and parameters of the convolution layers. However, its full receptive field is not limited and takes up the whole tile, as through the normalization parameter calculation every pixel takes part in the final prediction. This network's predictions can't be used to obtain seamless stitched predictions regardless of how large the overlap between tiles is.</p>
+<h2 id="transformers-inherently-cause-tiling-artifacts">Transformers inherently cause tiling artifacts</h2>
+<p>For the convolutional architecture full inference pipeline for the large image is the following:</p>
+<ul>
+<li>Split the large image into tiles of arbitrary size</li>
+<li>Run prediction with features inside the network normalized either using statistics of the input tile or global fixed parameters</li>
+<li>Stitch the predictions for individual tiles to obtain final prediction for the large image</li>
+</ul>
+<p>For Transformers the procedure is more complicated:</p>
+<ul>
+<li>Split the large image into tiles of fixed size defined by Transformer architecture, in particular, by the positional encoding</li>
+<li>Split the tile into patches, often <span class="arithmatex">\(16 \times 16\)</span> is used</li>
+<li>Encode each patch, normalize features <strong>per patch</strong> using <code>GroupNorm</code></li>
+<li>Calculate new features of each patch using features of all patches and attention mechanism, normalize features <strong>per patch</strong> using <code>GroupNorm</code>, repeat this step multiple times</li>
+<li>Use final features to generate dense prediction</li>
+<li>Stitch the predictions for individual tiles to obtain final prediction for the large image</li>
+</ul>
+<p>In this case the whole tile is always used for the prediction of every pixel of the output. Normally the selling point of transformer architecture: less bias, more context used, but in the sliding window inference context it means that it's not possible to achieve seamless stitching. Moreover, since there's a second round of tiling/stitching inside the transformer, dense predictions even inside one tile are not necessarily smooth - for more details see the numerous works on the registers and high-norm patches in DINOv2. </p>
+<p>The same receptive field calculation as we did for the U-Net, shows the clear patch artifacts in the Transformer-based UNETR. Interestingly, the effective receptive field is not larger than for the usual U-Net:</p>
+<p><img src="images/receptive_field_unetr.png" alt="Receptive field UNETR" align=center style="width: 400px;"/></p>
+<p>In transformers theoretical receptive field is the whole tile, so mismatch between tiles is not an edge artifact but rather the inherent property of the network arising from the attention mechanism and patch-wise normalization.</p>
+<h2 id="tile-mismatch-metric">Tile mismatch metric</h2>
+<p><img src="images/tile_mismatch_metric.png" alt="Receptive field UNETR" align=center style="width: 400px;"/></p>
+<p>Quantification of tiling artifacts is challenging because their magnitude depends on the similarity of the content of neighboring tiles in different parts of the image. To figure out if there's tiling mismatch, split the image into overlapping tiles and compare the predictions in the overlap areas. To avoid edge effects, only take the valid part of the overlap, as shown in the picture above. To catch all possible issues, run the predictions for the whole dataset in a way that valid overlap areas cover the whole image or at least some representative part of it.</p>
+<p>I found it useful to calculate two metrics: <strong>maximum distance</strong> and <strong>median tile mismatch</strong>.</p>
+<p>Maximum distance is the maximum difference between predictions.
+$$
+max\ dist = \max_{i=1}^M(|O_{i1} - O_{i2}|),
+$$</p>
+<p>where <span class="arithmatex">\(O_{i1}\)</span> and <span class="arithmatex">\(O_{i2}\)</span> are predictions in the valid overlap region in tile <span class="arithmatex">\(i\)</span> and <span class="arithmatex">\(M\)</span> is number of sampled tiles. In <span class="arithmatex">\(max\ dist\)</span> <span class="arithmatex">\(\max\)</span> is taken over all channels and all tiles, making it an indicator of whether given setup produces tiling artifacts. If <span class="arithmatex">\(max\ dist = 0\)</span> the predictions match perfectly and the pipeline is fully artifact-free. Although this metric is good for detecting the presence of artifacts, I found that in almost all cases the maximum difference was not very descriptive of how bad the artifacts are on average. For example, in our previous experiment with different tile sizes, prediction with <span class="arithmatex">\(96 \times 96 \times 96\)</span> obviously had worse tiling artifacts than <span class="arithmatex">\(96 \times 128 \times 128\)</span>. Maximum distance in both cases is 1 as there are clearly pixels that completely change the class but on average we see less artifacts.</p>
+<p>To quantify how bad the artifacts are I found it useful to look at the median distance between predictions over all tiles:</p>
+<div class="arithmatex">\[
+tile\ mismatch = \mathop{\mathit{median}}_{i=1}^{M}(1 - Dice(O_{i1}, O_{i2})), 
+\]</div>
+<p><span class="arithmatex">\(Tile\ mismatch\)</span> is calculated per channel and characterizes the magnitude of the artifacts. It is likely that in a large dataset there are neighboring tiles with similar content which have very similar predictions in the overlapping areas and then there are some tiles where the content of the image changes suddenly, causing much stronger artifacts. Calculating median roughly describes how bad the artifacts are in the image overall.</p>
+<h2 id="practical-tips">Practical tips</h2>
+<h3 id="how-to-detect-tiling-artifacts">How to detect tiling artifacts?</h3>
+<ul>
+<li>Run sliding window inference prediction pipeline with different tile sizes and different tile overlaps. If predictions change - there is something going on</li>
+<li>Run predictions for the tiles with large overlap and calculate the <strong>maximum distance</strong> between predictions. It should be exactly 0.</li>
+</ul>
+<h3 id="how-to-eliminate-tiling-artifacts">How to eliminate tiling artifacts?</h3>
+<p>Once it's established that there is an issues with tiling and stitching, the question is which part of the pipeline causes them.</p>
+<h4 id="preprocessing">Preprocessing</h4>
+<p>After the large image is split into tiles, some pipelines apply transforms to tiles separately. For example, it is relatively common to apply normalize input intensity distribution for each tile separately, changing the input of the network in tile-dependent manner. Of course, this causes tiling artifacts. You can think of it the following way: if even the network input can't be stitched back seamlessly, why would the output have artifact-free?</p>
+<p><strong>No tile-wise transforms should be applied to the input data</strong></p>
+<h4 id="feature-normalization-inside-the-network">Feature normalization inside the network</h4>
+<p>As we have seen in this tutorial, convolutional networks which normalize features based on the current input rather than global fixed parameters, cause mismatch between predictions. Unfortunately, it's not possible to easily switch between <code>InstanceNorm</code> and <code>BatchNorm</code>, so the only way is to train another network. Of course, there are many different architectures and layers, and a simple replacement of a normalization layer might not be enough for more sophisticated. No matter the architecture, the following principle hold:   </p>
+<p><strong>All network parameters should be global and independent of the current input</strong></p>
+<p>Of course, it applies only to networks which are translation-invariant. For examples, transformers always use the whole input image to generate predictions, so it is not possible to avoid artifacts.</p>
+<h4 id="tile-overlap">Tile overlap</h4>
+<p>When the network is applied to the tiles, usually zero-padding or mirroring is used to keep the output same size as input. The predictions on the edge of the tiles will not match between neighboring tiles because the network does not get correct full context: part of the input is replaced with zeros. The size of affected area is determined by the theoretical receptive field of the network. Removing this affected area ensures that the predictions don't have any edge effects and should match.</p>
+<p><strong>Only valid part of the prediction should be used for stitching</strong></p>
+<h4 id="postprocessing">Postprocessing</h4>
+<p>Same as with preprocessing, there should be no tile-wise postprocessing. </p>
+<p><strong>No tile-wise transforms should be applied to the output</strong></p>
+<h4 id="consider-the-whole-pipeline">Consider the whole pipeline</h4>
+<p>If the pipeline has tiling artifacts, it is likely that the problem is not just in one part of the pipeline. For example, if the network creates artifacts, postprocessing might be set up to reduce them. Maybe the predicted probabilities are additionally normalized to reduce mismatch - then after fixing the problems with the network this postprocessing is likely to make the predictions worse. If after fixing one step the artifacts don't go away or get worse - it just means that there were multiple causes for them. Try to isolate parts:
+- stitch the preprocessed inputs by replacing the network with an <code>Identity</code> layer
+- run the network on the overlapping tile which were created manually, not by your normal sampling pipeline</p>
+<p>Bioimage analysis is a diverse field and I couldn't possible anticipate all the fun/weird things people do to their images, however if the network is translation-invariant and none of its parameters depend on the current input, it generally should be possible to achieve seamless predictions for the images of arbitrary size. </p>
+<h3 id="how-to-minimize-tiling-artifacts">How to minimize tiling artifacts?</h3>
+<p>Let's say the network which causes tiling artifacts is fixed and can't be retrained or you decided to use transformer architecture. How to make sure that there are as little artifacts as possible?</p>
+<ul>
+<li>
+<p>Calculate effective receptive field and set the halo to a reasonable value. For example, for the UNETR used in this tutorial, we can see that only a few central tiles have a strong influence on the prediction, therefore <code>32</code> pixels is a good halo size.</p>
+</li>
+<li>
+<p>Adjust tile sampling to make sure that the content of all tiles is similar. Usually it means using <code>batch_size=1</code> and as large tile size as possible. Try to crop as much background as possible. </p>
+</li>
+<li>
+<p>If, despite all efforts, there are still visible borders between tiles, try to apply smoothing when stitching. For example, nnU-Net and Cellpose compute weighted average of the tiles, with the weight decreasing from 1 in the middle of the tile to 0 at the border, so even if there's mismatch, it's not so obvious.</p>
+</li>
+</ul>
+<h2 id="why-use-instancenorm-at-all">Why use <code>InstanceNorm</code> at all?</h2>
+<p>If <code>InstanceNorm</code> causes all these problems, why does anyone use it at all? For detailed answer, check out my <a href="https://buglakova.github.io/train-eval-disparity/">tutorial on <code>BatchNorm</code></a>.</p>
+<p>For examples of different modalities, architectures and quantitative results check out my manuscript <a href="https://arxiv.org/abs/2503.19545">Tiling artifacts and trade-offs of feature normalization in the segmentation of large biological images</a>.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.12658920.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5cf534bf.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
